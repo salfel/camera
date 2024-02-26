@@ -28,5 +28,7 @@ tmp/
 .env
 
 node_modules
-
 cmd/web/css/styles.css
+
+bin/**
+main

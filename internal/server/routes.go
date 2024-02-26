@@ -9,7 +9,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-func (s *Server) RegisterRoutes() http.Handler {
+func (s *Server) RegisterRoutes(hub *Hub) http.Handler {
 	r := gin.Default()
 
 	r.GET("/", s.HelloWorldHandler)
@@ -22,6 +22,10 @@ func (s *Server) RegisterRoutes() http.Handler {
 
 	r.POST("/hello", func(c *gin.Context) {
 		web.HelloWebHandler(c.Writer, c.Request)
+	})
+
+	r.GET("/video", func(c *gin.Context) {
+		serveWs(hub, c.Writer, c.Request)
 	})
 
 	return r

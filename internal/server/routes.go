@@ -25,8 +25,8 @@ func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 		web.HelloWebHandler(c.Writer, c.Request)
 	})
 
-	r.GET("/video", func(c *gin.Context) {
-		broadcast.ServeWs(hub, c.Writer, c.Request)
+	r.GET("/video/:channel", func(c *gin.Context) {
+		broadcast.ServeWs(hub, c, "video")
 	})
 
 	return r

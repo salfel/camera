@@ -2,28 +2,29 @@ package broadcast
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
-	"net/http"
 )
 
-func ServeWs(hub *Hub, w http.ResponseWriter, r *http.Request) {
-	conn, err := upgrader.Upgrade(w, r, nil)
+type Client struct {
+	hub     *Hub
+	conn    *websocket.Conn
+	send    chan Message
+	channel string
+}
+
+func ServeWs(hub *Hub, c *gin.Context, channel string) {
+	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
-	client := &Client{hub: hub, conn: conn, send: make(chan []byte)}
+	client := &Client{hub: hub, conn: conn, send: make(chan Message), channel: channel}
 	client.hub.register <- client
 
 	go client.readPump()
 	go client.writePump()
-}
-
-type Client struct {
-	hub  *Hub
-	conn *websocket.Conn
-	send chan []byte
 }
 
 func (c *Client) writePump() {
@@ -45,7 +46,7 @@ func (c *Client) writePump() {
 				return
 			}
 
-			err := c.conn.WriteMessage(websocket.TextMessage, message)
+			err := c.conn.WriteMessage(websocket.TextMessage, message.data)
 			if err != nil {
 				return
 			}
@@ -55,8 +56,11 @@ func (c *Client) writePump() {
 
 func (c *Client) readPump() {
 	defer func() {
-		c.conn.Close()
+		err := c.conn.Close()
 		c.hub.unregister <- c
+		if err != nil {
+			fmt.Println(err)
+		}
 	}()
 
 	for {
@@ -65,6 +69,6 @@ func (c *Client) readPump() {
 			break
 		}
 
-		c.hub.broadcast <- message
+		c.hub.broadcast <- Message{c, message, c.channel}
 	}
 }

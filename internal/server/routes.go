@@ -16,6 +16,7 @@ func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r.GET("/", s.HelloWorldHandler)
 
 	r.Static("/js", "./cmd/web/js")
+	r.StaticFile("/styles.css", "./cmd/web/css/styles.css")
 
 	r.GET("/web", func(c *gin.Context) {
 		templ.Handler(web.HelloForm()).ServeHTTP(c.Writer, c.Request)

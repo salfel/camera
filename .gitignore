@@ -26,3 +26,7 @@ tmp/
 
 # .env file
 .env
+
+node_modules
+
+cmd/web/css/styles.css

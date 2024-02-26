@@ -1,6 +1,7 @@
 package server
 
 import (
+	"camera-server/internal/server/broadcast"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
@@ -9,7 +10,7 @@ import (
 	"github.com/a-h/templ"
 )
 
-func (s *Server) RegisterRoutes(hub *Hub) http.Handler {
+func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r := gin.Default()
 
 	r.GET("/", s.HelloWorldHandler)
@@ -25,7 +26,7 @@ func (s *Server) RegisterRoutes(hub *Hub) http.Handler {
 	})
 
 	r.GET("/video", func(c *gin.Context) {
-		serveWs(hub, c.Writer, c.Request)
+		broadcast.ServeWs(hub, c.Writer, c.Request)
 	})
 
 	return r

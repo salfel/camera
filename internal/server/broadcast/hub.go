@@ -10,48 +10,39 @@ var upgrader = websocket.Upgrader{
 }
 
 type Hub struct {
-	clients    map[string]map[*Client]bool
-	broadcast  chan Message
-	register   chan *Client
-	unregister chan *Client
+	Clients    map[string]map[*Client]bool
+	Broadcast  chan Message
+	Register   chan *Client
+	Unregister chan *Client
 }
 
 type Message struct {
-	sender  *Client
-	data    []byte
-	channel string
+	Sender  *Client
+	Data    []byte
+	Channel string
 }
 
 func NewHub() *Hub {
 	return &Hub{
-		broadcast:  make(chan Message),
-		clients:    make(map[string]map[*Client]bool),
-		register:   make(chan *Client),
-		unregister: make(chan *Client),
+		Broadcast:  make(chan Message),
+		Clients:    make(map[string]map[*Client]bool),
+		Register:   make(chan *Client),
+		Unregister: make(chan *Client),
 	}
 }
 
 func (h *Hub) Run() {
 	for {
 		select {
-		case client := <-h.register:
-			_, ok := h.clients[client.channel]
+		case client := <-h.Register:
+			_, ok := h.Clients[client.Channel]
 			if !ok {
-				h.clients[client.channel] = make(map[*Client]bool)
+				h.Clients[client.Channel] = make(map[*Client]bool)
 			}
-			h.clients[client.channel][client] = true
-		case client := <-h.unregister:
-			if _, ok := h.clients[client.channel][client]; ok {
-				delete(h.clients[client.channel], client)
-			}
-			close(client.send)
-		case message := <-h.broadcast:
-			for client := range h.clients[message.channel] {
-				if message.channel != client.channel {
-					continue
-				}
-
-				client.send <- message
+			h.Clients[client.Channel][client] = true
+		case client := <-h.Unregister:
+			if _, ok := h.Clients[client.Channel][client]; ok {
+				delete(h.Clients[client.Channel], client)
 			}
 		}
 	}

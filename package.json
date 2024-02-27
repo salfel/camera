@@ -7,7 +7,7 @@
     "test": "tests"
   },
   "scripts": {
-    "tailwind": "npx tailwind build cmd/web/css/_app.css -o cmd/web/css/styles.css"
+    "tailwind": "npx tailwind -i cmd/web/css/_app.css -o cmd/web/css/styles.css"
   },
   "keywords": [],
   "author": "",

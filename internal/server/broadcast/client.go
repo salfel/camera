@@ -7,10 +7,10 @@ import (
 )
 
 type Client struct {
-	hub     *Hub
-	conn    *websocket.Conn
-	send    chan Message
-	channel string
+	Hub     *Hub
+	Conn    *websocket.Conn
+	Send    chan Message
+	Channel string
 }
 
 func ServeWs(hub *Hub, c *gin.Context, channel string) {
@@ -20,8 +20,8 @@ func ServeWs(hub *Hub, c *gin.Context, channel string) {
 		return
 	}
 
-	client := &Client{hub: hub, conn: conn, send: make(chan Message), channel: channel}
-	client.hub.register <- client
+	client := &Client{Hub: hub, Conn: conn, Send: make(chan Message), Channel: channel}
+	client.Hub.Register <- client
 
 	go client.readPump()
 	go client.writePump()
@@ -29,24 +29,21 @@ func ServeWs(hub *Hub, c *gin.Context, channel string) {
 
 func (c *Client) writePump() {
 	defer func() {
-		err := c.conn.Close()
-		if err != nil {
-			fmt.Println(err)
-		}
+		c.Hub.Unregister <- c
 	}()
 
 	for {
 		select {
-		case message, ok := <-c.send:
+		case message, ok := <-c.Send:
 			if !ok {
-				err := c.conn.WriteMessage(websocket.CloseMessage, []byte{})
+				err := c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				if err != nil {
 					fmt.Println(err)
 				}
 				return
 			}
 
-			err := c.conn.WriteMessage(websocket.TextMessage, message.data)
+			err := c.Conn.WriteMessage(websocket.TextMessage, message.Data)
 			if err != nil {
 				return
 			}
@@ -56,19 +53,15 @@ func (c *Client) writePump() {
 
 func (c *Client) readPump() {
 	defer func() {
-		err := c.conn.Close()
-		c.hub.unregister <- c
-		if err != nil {
-			fmt.Println(err)
-		}
+		c.Hub.Unregister <- c
 	}()
 
 	for {
-		_, message, err := c.conn.ReadMessage()
+		_, message, err := c.Conn.ReadMessage()
 		if err != nil {
 			break
 		}
 
-		c.hub.broadcast <- Message{c, message, c.channel}
+		c.Hub.Broadcast <- Message{c, message, c.Channel}
 	}
 }

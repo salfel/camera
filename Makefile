@@ -4,13 +4,19 @@
 all: build
 
 build:
+	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
 	@echo "Building..."
 	@templ generate
 	@go build -o main cmd/api/main.go
 
 # Run the application
 run:
-	@go run cmd/api/main.go
+	@templ generate
+	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
+	@air
+
+tailwind:
+	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
 
 # Test the application
 test:

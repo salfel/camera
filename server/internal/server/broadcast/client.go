@@ -11,6 +11,7 @@ type Client struct {
 	Stream  *Stream
 	Conn    *websocket.Conn
 	Send    chan Message
+    Message chan Message
 	Channel string
     Type    string
 }
@@ -30,7 +31,7 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
 
     ctx, cancel := context.WithCancel(context.Background())
 
-    client := &Client{Stream: &stream, Conn: conn, Send: make(chan Message), Channel: channel, Type: clientType}
+    client := &Client{Stream: &stream, Conn: conn, Send: make(chan Message), Message: make(chan Message), Channel: channel, Type: clientType}
 	client.Stream.Hub.Register <- client
 
 	go client.readPump(cancel)
@@ -73,11 +74,12 @@ func (c *Client) readPump(cancel context.CancelFunc) {
 	}()
 
 	for {
-		_, message, err := c.Conn.ReadMessage()
+		_, msg, err := c.Conn.ReadMessage()
 		if err != nil {
 			break
 		}
 
-		c.Stream.Hub.Broadcast <- Message{c, message, c.Channel}
+        message := Message{c, msg, c.Channel} 
+        c.Message <- message
 	}
 }

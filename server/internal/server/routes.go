@@ -12,7 +12,11 @@ import (
 func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r := gin.Default()
 
-	r.GET("/", VideoHandler)
+	r.GET("/", videoHandler)
+
+    r.GET("/stream/:channel", func(c *gin.Context) {
+        streamHandler(c, hub)
+    })
 
 	r.Static("/js", "./cmd/web/js")
 	r.StaticFile("/styles.css", "./cmd/web/css/styles.css")
@@ -20,6 +24,12 @@ func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	return r
 }
 
-func VideoHandler(c *gin.Context) {
+func videoHandler(c *gin.Context) {
     templ.Handler(web.Video()).ServeHTTP(c.Writer, c.Request)
+}
+
+func streamHandler(c *gin.Context, hub *broadcast.Hub) {
+    channel := c.Param("channel")
+
+    broadcast.ServeWs(hub, c, channel)
 }

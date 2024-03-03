@@ -2,10 +2,15 @@ from websockets import connect
 import json
 import asyncio
 import socket
+import requests
+
+async def getIp(): 
+    response = requests.get("https://api.ipify.org")
+    return response.text
 
 async def main(): 
-    url = "ws://localhost:3000/stream/test2"
-    ip = socket.gethostbyname(socket.gethostname())
+    url = "ws://192.168.253.132:3000/stream/test2"
+    ip = await getIp()
     async with connect(url) as websocket: 
         await websocket.send(json.dumps({ "type": "register:ip", "ip": ip}))
         message = await websocket.recv()

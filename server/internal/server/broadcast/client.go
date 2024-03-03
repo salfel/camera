@@ -63,6 +63,7 @@ func (c *Client) writePump() {
 func (c *Client) readPump() {
 	defer func() {
 		c.Stream.Hub.Unregister <- c
+        c.Conn.Close()
 	}()
 
 	for {
@@ -71,6 +72,7 @@ func (c *Client) readPump() {
 			break
 		}
 
+        fmt.Println(string(message))
 		c.Stream.Hub.Broadcast <- Message{c, message, c.Channel}
 	}
 }

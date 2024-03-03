@@ -1,0 +1,11 @@
+#! /bin/bash
+
+sudo ln -sf $PWD/streamCamHls /usr/local/bin
+sudo ln -sf $PWD/nginx.conf /etc/nginx/nginx.conf
+
+sudo ln -sf $PWD/camhls.service /etc/systemd/system
+
+sudo systemctl daemon-reload
+sudo systemctl enable camhls
+sudo systemctl start camhls
+

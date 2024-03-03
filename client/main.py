@@ -1,7 +1,6 @@
 from websockets import connect
 import json
 import asyncio
-import socket
 import requests
 
 async def getIp(): 

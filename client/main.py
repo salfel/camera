@@ -1,3 +1,5 @@
+#! /usr/bin/python
+
 from websockets import connect
 import json
 import asyncio

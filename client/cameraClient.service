@@ -1,11 +1,11 @@
 [Unit]
-Description=Camera HLS streamer
+Description=Python Client for interacting with the server
 After=network.target
 
 [Service]
 Type=simple
 User=salfel
-ExecStart=/usr/local/bin/streamCamHls
+ExecStart=/usr/local/bin/cameraClient
 Restart=on-inactive
 
 [Install]

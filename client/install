@@ -1,7 +1,7 @@
 #! /bin/bash
 
-sudo ln -sf $PWD/cameraClient /usr/bin/local/
 sudo ln -sf $PWD/cameraClient.service /etc/systemd/system
+sudo ln -sf $PWD/main.py /usr/bin/local/cameraClient
 
 sudo systemctl daemon-reload
 sudo systemctl enable cameraClient

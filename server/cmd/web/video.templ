@@ -1,5 +1,7 @@
 package web
 
+import "fmt"
+
 templ Video(serverIp string) {
     @Base(true) {
         @VideoElement(serverIp) {
@@ -10,6 +12,10 @@ templ Video(serverIp string) {
 
 templ VideoElement(serverIp string) {
     <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
-        <source src="http://192.168.253.166:80/movie.m3u8" type="application/x-mpegURL"></source>
+        <source src={streamUrl(serverIp)} type="application/x-mpegURL"></source>
     </video>
+}
+
+func streamUrl(serverIp string) string {
+    return fmt.Sprintf("http://%s:80/movie.m3u8", serverIp)
 }

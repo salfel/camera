@@ -31,7 +31,7 @@ func videoHandler(c *gin.Context, hub *broadcast.Hub) {
     channel := c.Param("channel")
 
     stream, ok := hub.Streams[channel]
-    if !ok {
+    if !ok || stream.Ip == "" {
         c.JSON(http.StatusNotFound, "Page not found")
         return
     }

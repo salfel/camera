@@ -3,8 +3,9 @@ package server
 import (
 	"camera-server/cmd/web"
 	"camera-server/internal/server/broadcast"
-	"github.com/a-h/templ"
 	"net/http"
+
+	"github.com/a-h/templ"
 
 	"github.com/gin-gonic/gin"
 )
@@ -12,7 +13,9 @@ import (
 func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r := gin.Default()
 
-	r.GET("/", videoHandler)
+    r.GET("/video/:channel", func(c *gin.Context) {
+        videoHandler(c, hub)
+    })
 
     r.GET("/stream/:channel", func(c *gin.Context) {
         streamHandler(c, hub)
@@ -24,8 +27,16 @@ func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	return r
 }
 
-func videoHandler(c *gin.Context) {
-    templ.Handler(web.Video()).ServeHTTP(c.Writer, c.Request)
+func videoHandler(c *gin.Context, hub *broadcast.Hub) {
+    channel := c.Param("channel")
+
+    stream, ok := hub.Streams[channel]
+    if !ok {
+        c.JSON(http.StatusNotFound, "Page not found")
+        return
+    }
+
+    templ.Handler(web.Video(stream.Ip)).ServeHTTP(c.Writer, c.Request)
 }
 
 func streamHandler(c *gin.Context, hub *broadcast.Hub) {

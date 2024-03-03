@@ -10,7 +10,7 @@ var upgrader = websocket.Upgrader{
 }
 
 type Hub struct {
-	Streams    map[string]Stream
+	Streams    map[string]*Stream
 	Broadcast  chan Message
 	Register   chan *Client
 	Unregister chan *Client
@@ -25,7 +25,7 @@ type Message struct {
 func NewHub() *Hub {
 	return &Hub{
 		Broadcast:  make(chan Message),
-		Streams:    make(map[string]Stream),
+		Streams:    make(map[string]*Stream),
 		Register:   make(chan *Client),
 		Unregister: make(chan *Client),
 	}
@@ -37,7 +37,7 @@ func (h *Hub) Run() {
 		case client := <-h.Register:
 			stream, ok := h.Streams[client.Channel]
 			if !ok {
-                stream = Stream{Ip: "", Clients: make([]*Client, 2)}
+                stream = &Stream{Ip: "", Clients: make([]*Client, 2)}
                 h.Streams[client.Channel] = stream
 			}
 

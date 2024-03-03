@@ -55,7 +55,6 @@ func HandleVideo(client *Client, ctx context.Context) {
                     break
                 }
 
-                fmt.Println(msg.Ip)
                 client.Stream.Ip = msg.Ip
                 client.Send <- Message{Data: []byte(client.Stream.Ip), Channel: client.Channel}
             }

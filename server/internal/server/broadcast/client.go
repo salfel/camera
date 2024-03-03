@@ -25,13 +25,13 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
     stream, ok := hub.Streams[channel]
 
     if !ok {
-        stream = Stream{Hub: hub, Ip: "", Clients: make([]*Client, 2)}
+        stream = &Stream{Hub: hub, Ip: "", Clients: make([]*Client, 2)}
         hub.Streams[channel] = stream
     }
 
     ctx, cancel := context.WithCancel(context.Background())
 
-    client := &Client{Stream: &stream, Conn: conn, Send: make(chan Message), Message: make(chan Message), Channel: channel, Type: clientType}
+    client := &Client{Stream: stream, Conn: conn, Send: make(chan Message), Message: make(chan Message), Channel: channel, Type: clientType}
 	client.Stream.Hub.Register <- client
 
 	go client.readPump(cancel)

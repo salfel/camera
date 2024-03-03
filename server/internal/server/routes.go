@@ -4,7 +4,6 @@ import (
 	"camera-server/cmd/web"
 	"camera-server/internal/server/broadcast"
 	"net/http"
-    "fmt"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
@@ -35,8 +34,6 @@ func videoHandler(c *gin.Context, hub *broadcast.Hub) {
         c.JSON(http.StatusNotFound, "Page not found")
         return
     }
-
-    fmt.Println(stream.Ip)
 
     templ.Handler(web.Video(stream.Ip)).ServeHTTP(c.Writer, c.Request)
 }

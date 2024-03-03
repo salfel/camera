@@ -1,9 +1,10 @@
 package broadcast
 
 import (
-    "encoding/json"
-    "fmt" 
-    "net"
+	"context"
+	"encoding/json"
+	"fmt"
+	"net"
 )
 
 type Stream struct {
@@ -21,7 +22,7 @@ type registerMessage struct {
     Ip      string `json:"ip"` 
 }
 
-func HandleVideo(client *Client) {
+func HandleVideo(client *Client, ctx context.Context) {
     for {
         select {
         case message := <-client.Stream.Hub.Broadcast:
@@ -51,10 +52,13 @@ func HandleVideo(client *Client) {
                         break
                     }
 
+                    fmt.Println(msg.Ip)
                     client.Stream.Ip = msg.Ip
                     client.Send <- Message{Data: []byte(client.Stream.Ip), Channel: client.Channel}
                 }
             }
+        case <-ctx.Done():
+            return
         }
     }
 }

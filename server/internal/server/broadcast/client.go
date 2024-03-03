@@ -1,6 +1,7 @@
 package broadcast
 
 import (
+    "context"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
@@ -14,11 +15,11 @@ type Client struct {
     Type    string
 }
 
-func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Client, error) {
+func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Client, context.Context, error) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
-		return nil, err
+		return nil, nil, err
 	}
     stream, ok := hub.Streams[channel]
 
@@ -27,16 +28,18 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
         hub.Streams[channel] = stream
     }
 
+    ctx, cancel := context.WithCancel(context.Background())
+
     client := &Client{Stream: &stream, Conn: conn, Send: make(chan Message), Channel: channel, Type: clientType}
 	client.Stream.Hub.Register <- client
 
-	go client.readPump()
-	go client.writePump()
+	go client.readPump(cancel)
+	go client.writePump(ctx)
 
-    return client, nil
+    return client, ctx, nil
 }
 
-func (c *Client) writePump() {
+func (c *Client) writePump(ctx context.Context) {
 	defer func() {
 		c.Stream.Hub.Unregister <- c
 	}()
@@ -56,14 +59,17 @@ func (c *Client) writePump() {
 			if err != nil {
 				return
 			}
+        case <-ctx.Done():
+            return
 		}
 	}
 }
 
-func (c *Client) readPump() {
+func (c *Client) readPump(cancel context.CancelFunc) {
 	defer func() {
 		c.Stream.Hub.Unregister <- c
         c.Conn.Close()
+        cancel()
 	}()
 
 	for {
@@ -72,7 +78,6 @@ func (c *Client) readPump() {
 			break
 		}
 
-        fmt.Println(string(message))
 		c.Stream.Hub.Broadcast <- Message{c, message, c.Channel}
 	}
 }

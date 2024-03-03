@@ -1,6 +1,6 @@
 package web
 
-templ Base() {
+templ Base(video bool) {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -10,8 +10,10 @@ templ Base() {
 			<link href="/styles.css" rel="stylesheet" />
             <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
 
-            <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-            <script defer src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+            if video {
+                <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
+                <script defer src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
+            }
 		</head>
 		<body>
 			{ children... }

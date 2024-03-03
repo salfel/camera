@@ -1,7 +1,7 @@
 package web
 
 templ Video() {
-    @Base() {
+    @Base(true) {
         <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
             <source src="http://192.168.253.166:80/movie.m3u8" type="application/x-mpegURL"></source>
         </video>

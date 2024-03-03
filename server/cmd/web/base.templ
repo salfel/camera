@@ -14,11 +14,7 @@ templ Base() {
             <script defer src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
 		</head>
 		<body>
-			<main>
-                <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
-                    <source src="http://192.168.253.166:80/movie.m3u8" type="application/x-mpegURL"></source>
-                </video>
-			</main>
+			{ children... }
 		</body>
 	</html>
 }

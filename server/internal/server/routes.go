@@ -31,5 +31,12 @@ func videoHandler(c *gin.Context) {
 func streamHandler(c *gin.Context, hub *broadcast.Hub) {
     channel := c.Param("channel")
 
-    broadcast.ServeWs(hub, c, channel)
+    client, err := broadcast.ServeWs(hub, c, channel, "camera")
+
+    if err != nil {
+        c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+        return
+    }
+
+    go broadcast.HandleVideo(client)
 }

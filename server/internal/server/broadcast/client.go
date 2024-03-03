@@ -7,29 +7,38 @@ import (
 )
 
 type Client struct {
-	Hub     *Hub
+	Stream  *Stream
 	Conn    *websocket.Conn
 	Send    chan Message
 	Channel string
+    Type    string
 }
 
-func ServeWs(hub *Hub, c *gin.Context, channel string) {
+func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Client, error) {
 	conn, err := upgrader.Upgrade(c.Writer, c.Request, nil)
 	if err != nil {
 		fmt.Println(err)
-		return
+		return nil, err
 	}
+    stream, ok := hub.Streams[channel]
 
-	client := &Client{Hub: hub, Conn: conn, Send: make(chan Message), Channel: channel}
-	client.Hub.Register <- client
+    if !ok {
+        stream = Stream{Hub: hub, Ip: "", Clients: make([]*Client, 2)}
+        hub.Streams[channel] = stream
+    }
+
+    client := &Client{Stream: &stream, Conn: conn, Send: make(chan Message), Channel: channel, Type: clientType}
+	client.Stream.Hub.Register <- client
 
 	go client.readPump()
 	go client.writePump()
+
+    return client, nil
 }
 
 func (c *Client) writePump() {
 	defer func() {
-		c.Hub.Unregister <- c
+		c.Stream.Hub.Unregister <- c
 	}()
 
 	for {
@@ -53,7 +62,7 @@ func (c *Client) writePump() {
 
 func (c *Client) readPump() {
 	defer func() {
-		c.Hub.Unregister <- c
+		c.Stream.Hub.Unregister <- c
 	}()
 
 	for {
@@ -62,6 +71,6 @@ func (c *Client) readPump() {
 			break
 		}
 
-		c.Hub.Broadcast <- Message{c, message, c.Channel}
+		c.Stream.Hub.Broadcast <- Message{c, message, c.Channel}
 	}
 }

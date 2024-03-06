@@ -1,16 +1,16 @@
 package middleware
 
 import (
-	"camera-server/internal/database"
+	"camera-server/services"
     "context"
 
 	"github.com/gin-gonic/gin"
 )
 
-func GetUser(c *gin.Context) *database.User {
-    db := database.GetDB()
+func GetUser(c *gin.Context) *services.User {
+    db := services.GetDB()
 
-    var session database.Session
+    var session services.Session
 
     cookie, err := c.Cookie("session")
     if err != nil {
@@ -19,11 +19,11 @@ func GetUser(c *gin.Context) *database.User {
 
     db.Where("id = ?", cookie).First(&session)
 
-    if session == (database.Session{}) {
+    if session == (services.Session{}) {
         return nil
     }
 
-    if session.User == (database.User{}) {
+    if session.User == (services.User{}) {
         return nil
     }
 

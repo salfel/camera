@@ -4,22 +4,17 @@
 all: build
 
 build:
-	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
 	@echo "Building..."
+	@tailwindcss -i public/_app.css -o public/styles.css
 	@templ generate
-	@go build -o main cmd/api/main.go
+	@go build -o main .
 
 # Run the application
 run:
-	go run cmd/api/main.go
+	go run .
 
 tailwind:
-	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css --watch
-
-# Test the application
-test:
-	@echo "Testing..."
-	@go test ./tests -v
+	@tailwindcss -i public/_app.css -o public/styles.css --watch
 
 # Clean the binary
 clean:
@@ -29,7 +24,7 @@ clean:
 # Live Reload
 watch:
 	@templ generate --watch & \
-	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css --watch & \
+	@tailwindcss -i public/_app.css -o public/styles.css --watch & \
 	air
  
 .PHONY: all build run test clean

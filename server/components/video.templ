@@ -1,9 +1,13 @@
 package components
 
-import "fmt"
+import (
+    "fmt"
+    
+    "camera-server/components/layouts"
+)
 
 templ Video(serverIp string) {
-    @Base(true) {
+    @layouts.Base(true) {
         <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
             <source src={streamUrl(serverIp)} type="application/x-mpegURL"></source>
         </video>

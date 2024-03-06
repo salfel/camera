@@ -14,7 +14,7 @@ run:
 	go run cmd/api/main.go
 
 tailwind:
-	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
+	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css --watch
 
 # Test the application
 test:
@@ -28,8 +28,8 @@ clean:
 
 # Live Reload
 watch:
-	@templ generate
-	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css
-	@air
-
+	@templ generate --watch & \
+	@tailwindcss -i cmd/web/css/_app.css -o cmd/web/css/styles.css --watch & \
+	air
+ 
 .PHONY: all build run test clean

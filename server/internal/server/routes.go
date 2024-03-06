@@ -2,6 +2,8 @@ package server
 
 import (
 	"camera-server/cmd/web"
+	"camera-server/internal/middleware"
+	"camera-server/internal/database"
 	"camera-server/internal/server/broadcast"
 	"net/http"
 
@@ -12,9 +14,13 @@ import (
 func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r := gin.Default()
 
-    r.GET("/video/:channel", func(c *gin.Context) {
+    r.Use(middleware.UserMiddleware)
+
+    r.GET("/", homeHandler)
+    
+    r.GET("video/:channel", func(c *gin.Context) {
         videoHandler(c, hub)
-    })
+    }, middleware.Auth)
 
     r.GET("/stream/:channel", func(c *gin.Context) {
         streamHandler(c, hub)
@@ -24,6 +30,18 @@ func (s *Server) RegisterRoutes(hub *broadcast.Hub) http.Handler {
 	r.StaticFile("/styles.css", "./cmd/web/css/styles.css")
 
 	return r
+}
+
+func homeHandler(c *gin.Context) {
+    db := database.GetDB()
+
+    var session database.Session
+    cookie, err := c.Cookie("session")
+    if err == nil {
+        db.Where("id = ?", cookie).First(&session)
+    }
+
+    templ.Handler(web.Home()).ServeHTTP(c.Writer, c.Request)
 }
 
 func videoHandler(c *gin.Context, hub *broadcast.Hub) {

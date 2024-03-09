@@ -1,13 +1,16 @@
 package auth
 
 import (
-    "fmt"
+	"errors"
+	"fmt"
+	"time"
 
-	"camera-server/templates"
 	"camera-server/services/database"
+	"camera-server/templates"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
+	"gorm.io/gorm"
 )
 
 func Login(c *gin.Context) {
@@ -20,13 +23,19 @@ func Authenticate(c *gin.Context) {
 
     db := database.GetDB()
 
-    fmt.Println(username, password)
-
     var user database.User
-    err := db.Where(database.User{Username: username, Password: password}).Find(&user).Error
-    if err != nil {
-        fmt.Println("couldnt find user")
+    result := db.Where(database.User{Username: username, Password: password}).First(&user)
+    if errors.Is(result.Error, gorm.ErrRecordNotFound)  {
+        values := map[string]string{"username": username, "password": password }
+
+        templ.Handler(templates.LoginForm(values, map[string]string{"password": "Wrong username or password"})).ServeHTTP(c.Writer, c.Request)
+        return
     }
 
-    c.JSON(200, user)
+    session := &database.Session{UserID: user.ID}
+    db.Create(&session)
+
+    c.SetCookie("session", fmt.Sprint(session.ID), int(time.Hour * 24 * 30), "/", "localhost", false, true)
+
+    c.Header("HX-Redirect", "/")
 }

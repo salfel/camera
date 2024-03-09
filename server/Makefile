@@ -16,6 +16,9 @@ run:
 tailwind:
 	@tailwindcss -i public/_app.css -o public/styles.css
 
+migrate: 
+	@go run services/database/migrate/migrate.go
+
 # Clean the binary
 clean:
 	@echo "Cleaning..."

@@ -1,15 +1,15 @@
 package middleware
 
 import (
-	 "camera-server/services"
+	 "camera-server/services/database"
 
 	"github.com/gin-gonic/gin"
 )
 
 func Auth(c *gin.Context) {
-    db := services.GetDB()
+    db := database.GetDB()
 
-    var session services.Session
+    var session database.Session
     cookie, err := c.Cookie("session")
     if err != nil {
         c.Redirect(302, "/")
@@ -18,7 +18,7 @@ func Auth(c *gin.Context) {
         db.Where("id = ?", cookie).First(&session)
     }
 
-    if session == (services.Session{}) {
+    if session == (database.Session{}) {
         c.Redirect(302, "/")
         c.Abort()
     }

@@ -28,6 +28,7 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
     a := r.Group("/auth")
     {
         a.GET("/login", auth.Login)
+        a.POST("/authenticate", auth.Authenticate)
     }
 
     r.StaticFile("/js/htmx.min.js", "./public/htmx.min.js")

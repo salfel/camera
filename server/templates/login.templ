@@ -7,33 +7,49 @@ import (
 templ Login() {
     @layouts.Auth() {
         <div class="bg-white px-8 py-6 rounded-lg">
-            <form class="w-80" action="/auth/authenticate" method="POST">
-                <div class="space-y-2 mb-5">
-                    <h1 class="text-xl font-semibold">Login</h1>
-                    <p class="text-sm">Login to use the full features of Security Camera</p>
-                </div>
-                <div class="space-y-4">
-                    <div>
-                        <label class="text-sm text-gray-800 mb-2">Username</label>
-                        <input 
-                            name="username" 
-                            class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
-                            placeholder="Username"
-                        />
-                    </div>
-                    <div>
-                        <label class="text-sm text-gray-800 mb-2">Password</label>
-                        <input 
-                            type="password"
-                            name="password" 
-                            class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
-                            placeholder="Password"
-                        />
-                    </div>
-
-                    <button type="submit" class="w-full py-2 bg-black text-white font-medium rounded-md">Login</button>
-                </div>
-            </form>
+            <div class="space-y-2 mb-5">
+                <h1 class="text-xl font-semibold">Login</h1>
+                <p class="text-sm">Login to use the full features of Security Camera</p>
+            </div>
+            @LoginForm(map[string]string{}, map[string]string{}) {}
         </div>
     }
+}
+
+templ LoginForm(values map[string]string, errors map[string]string) {
+    <form class="w-80" hx-post="/auth/authenticate" hx-swap="outerHTML">
+        <div class="space-y-4">
+            <div>
+                <label class="text-sm text-gray-800 mb-2">Username</label>
+                <input 
+                    name="username" 
+                    class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
+                    placeholder="Username"
+                    if username, ok := values["username"]; ok {
+                        value={username}
+                    }
+                />
+                if err, ok := errors["username"]; ok {
+                    <span class="font-sm text-red-500 mt-1">{ err }</span>
+                }
+            </div>
+            <div>
+                <label class="text-sm text-gray-800 mb-2">Password</label>
+                <input 
+                    type="password"
+                    name="password" 
+                    class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
+                    placeholder="Password"
+                    if password, ok := values["password"]; ok {
+                        value={password}
+                    }
+                />
+                if err, ok := errors["password"]; ok {
+                    <span class="font-sm text-red-500 mt-1">{ err }</span>
+                }
+            </div>
+
+            <button type="submit" class="w-full py-2 bg-black text-white font-medium rounded-md">Login</button>
+        </div>
+    </form>
 }

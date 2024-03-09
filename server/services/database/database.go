@@ -7,7 +7,7 @@ import (
 
 type User struct {
     gorm.Model
-    Username string
+    Username string `gorm:"unique"`
     Password string
 }
 
@@ -24,7 +24,7 @@ func GetDB() *gorm.DB {
         return DB
     }
 
-    db, err := gorm.Open(sqlite.Open("database.db"), &gorm.Config{})
+    db, err := gorm.Open(sqlite.Open("database.sqlite"), &gorm.Config{})
     if err != nil {
         panic("failed to connect database")
     }

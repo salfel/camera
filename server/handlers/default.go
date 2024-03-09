@@ -29,6 +29,9 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
     {
         a.GET("/login", auth.Login)
         a.POST("/authenticate", auth.Authenticate)
+
+        a.GET("/register", auth.Register)
+        a.POST("/create", auth.Create)
     }
 
     r.StaticFile("/js/htmx.min.js", "./public/htmx.min.js")

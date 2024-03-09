@@ -27,8 +27,9 @@ tmp/
 # .env file
 .env
 
+database.sqlite
+
 node_modules
-cmd/web/css/styles.css
 
 bin/**
 main

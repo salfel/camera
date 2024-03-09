@@ -13,7 +13,7 @@ import (
 func HandleRoutes(hub *broadcast.Hub) http.Handler {
     r := gin.Default()
 
-    r.Use(middleware.UserMiddleware)
+    r.Use(middleware.User)
 
     r.GET("/", Home)
     
@@ -32,6 +32,8 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 
         a.GET("/register", auth.Register)
         a.POST("/create", auth.Create)
+
+        a.POST("/logout", auth.Logout)
     }
 
     r.StaticFile("/js/htmx.min.js", "./public/htmx.min.js")

@@ -32,16 +32,19 @@ templ Header() {
             <h2 class="text-3xl font-semibold">CCTV Camera</h2>
         </div>
         if GetUser(ctx) == nil {
-            <a href="/auth/login" class="text-lg font-medium">Login</a>
+            <div class="space-x-5">
+                <a href="/auth/login" class="text-lg font-medium">Login</a>
+                <a href="auth/register" class="text-lg font-medium">Register</a>
+            </div>
         } else {
-            <span>{GetUser(ctx).Username}</span>
+            <button hx-post="auth/logout">{GetUser(ctx).Username}</button>
         }
     </header>
 }
 
 func GetUser(ctx context.Context) *database.User {
-    if user, ok := ctx.Value("user").(database.User); ok {
-        return &user
+    if user, ok := ctx.Value("user").(*database.User); ok {
+        return user
     }
 
     return nil

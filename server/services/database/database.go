@@ -14,13 +14,13 @@ type User struct {
 type Session struct {
     gorm.Model
     UserID  uint
-    User    User 
+    User    User  `gorm:"constraint:OnDelete:RESTRICT"`
 }
 
-var DB *gorm.DB = &gorm.DB{}
+var DB *gorm.DB
 
 func GetDB() *gorm.DB {
-    if *DB != (gorm.DB{}) {
+    if DB != nil {
         return DB
     }
 

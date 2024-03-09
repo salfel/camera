@@ -1,0 +1,19 @@
+package layouts
+
+templ Auth() {
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8"/>
+            <title>Security Camera</title>
+            <script src="/js/htmx.min.js"></script>
+            <link href="/styles.css" rel="stylesheet" />
+            <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
+        </head>
+        <body>
+            <div class="h-screen flex items-center justify-center bg-gray-200">
+                { children... }
+            </div>
+        </body>
+    </html>
+}

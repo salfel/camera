@@ -5,6 +5,7 @@ import (
 
 	"camera-server/middleware"
 	"camera-server/services/broadcast"
+    "camera-server/handlers/auth"
 
 	"github.com/gin-gonic/gin"
 )
@@ -23,6 +24,11 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
     r.GET("/stream/:channel", func(c *gin.Context) {
         Stream(c, hub)
     })
+
+    a := r.Group("/auth")
+    {
+        a.GET("/login", auth.Login)
+    }
 
     r.StaticFile("/js/htmx.min.js", "./public/htmx.min.js")
     r.StaticFile("/styles.css", "./public/styles.css")

@@ -1,22 +1,22 @@
 package handlers
 
 import (
-	"camera-server/components"
-    . "camera-server/services"
+	"camera-server/templates"
+    "camera-server/services/database"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
 )
 
 func Home(c *gin.Context) {
-    db := GetDB()
+    db := database.GetDB()
 
-    var session Session
+    var session database.Session
     cookie, err := c.Cookie("session")
     if err == nil {
         db.Where("id = ?", cookie).First(&session)
     }
 
-    templ.Handler(components.Home()).ServeHTTP(c.Writer, c.Request)
+    templ.Handler(templates.Home()).ServeHTTP(c.Writer, c.Request)
 }
 

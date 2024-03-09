@@ -2,7 +2,7 @@ package handlers
 
 import (
 	"camera-server/services/broadcast"
-    "camera-server/components"
+    "camera-server/templates"
 
 	"net/http"
 
@@ -19,7 +19,7 @@ func Video(c *gin.Context, hub *broadcast.Hub) {
         return
     }
 
-    templ.Handler(components.Video(stream.Ip)).ServeHTTP(c.Writer, c.Request)
+    templ.Handler(templates.Video(stream.Ip)).ServeHTTP(c.Writer, c.Request)
 }
 
 func Stream(c *gin.Context, hub *broadcast.Hub) {

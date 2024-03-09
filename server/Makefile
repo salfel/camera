@@ -14,7 +14,7 @@ run:
 	go run .
 
 tailwind:
-	@tailwindcss -i public/_app.css -o public/styles.css --watch
+	@tailwindcss -i public/_app.css -o public/styles.css
 
 # Clean the binary
 clean:

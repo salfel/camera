@@ -1,7 +1,7 @@
 package layouts
 
 import (
-    . "camera-server/services"
+    "camera-server/services/database"
 )
 
 templ Base(video bool) {
@@ -32,15 +32,15 @@ templ Header() {
             <h2 class="text-3xl font-semibold">CCTV Camera</h2>
         </div>
         if GetUser(ctx) == nil {
-            <a href="/login" class="text-lg font-medium">Login</a>
+            <a href="/auth/login" class="text-lg font-medium">Login</a>
         } else {
             <span>{GetUser(ctx).Username}</span>
         }
     </header>
 }
 
-func GetUser(ctx context.Context) *User {
-    if user, ok := ctx.Value("user").(User); ok {
+func GetUser(ctx context.Context) *database.User {
+    if user, ok := ctx.Value("user").(database.User); ok {
         return &user
     }
 

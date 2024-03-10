@@ -15,6 +15,9 @@ templ Register() {
 }
 
 templ RegisterForm(values, errors map[string]string) {
+    <a href="/auth/login" class="absolute top-5 right-5 font-medium text-lg">
+        Login
+    </a>
     <form class="w-80" hx-post="/auth/create" hx-swap="outerHTML">
         <div class="space-y-4">
             <div>

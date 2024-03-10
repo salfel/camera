@@ -1,7 +1,9 @@
 package middleware
 
 import (
-	 "camera-server/services/database"
+    "fmt"
+
+	"camera-server/services/database"
 
 	"github.com/gin-gonic/gin"
 )
@@ -14,10 +16,14 @@ func Auth(c *gin.Context) {
     if err != nil {
         c.Redirect(302, "/")
         c.Abort()
-    } else {
-        db.Where("id = ?", cookie).First(&session)
-    }
+        fmt.Println("aborted")
+        return
+    } 
 
+    db.Where("id = ?", cookie).First(&session)
+
+    fmt.Println(session)
+    
     if session == (database.Session{}) {
         c.Redirect(302, "/")
         c.Abort()

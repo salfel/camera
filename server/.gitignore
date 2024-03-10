@@ -28,6 +28,7 @@ tmp/
 .env
 
 database.sqlite
+public/styles.css
 
 node_modules
 

@@ -1,10 +1,11 @@
 package handlers
 
 import (
+    "net/http"
+    "fmt"
+
 	"camera-server/services/broadcast"
     "camera-server/templates"
-
-	"net/http"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
@@ -31,6 +32,8 @@ func Stream(c *gin.Context, hub *broadcast.Hub) {
         c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
         return
     }
+
+    fmt.Println("new stream", channel)
 
     go broadcast.HandleVideo(client, ctx)
 }

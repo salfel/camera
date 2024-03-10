@@ -16,7 +16,7 @@ func Logout(c *gin.Context) {
 
     db := database.GetDB()
 
-    db.Delete(&database.User{}, sessionId)
+    db.Delete(&database.Session{}, sessionId)
 
     c.Header("HX-Redirect", "/")
 }

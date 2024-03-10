@@ -14,7 +14,7 @@ type User struct {
 type Session struct {
     gorm.Model
     UserID  uint
-    User    User  `gorm:"constraint:OnDelete:RESTRICT"`
+    User    User
 }
 
 var DB *gorm.DB

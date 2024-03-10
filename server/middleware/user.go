@@ -1,8 +1,6 @@
 package middleware
 
 import (
-    "fmt"
-
 	"camera-server/services/database"
     "context"
 
@@ -34,8 +32,6 @@ func getUser(c *gin.Context) *database.User {
 
 func User(c *gin.Context) {
     user := getUser(c)
-
-    fmt.Println(user)
 
     ctx := context.WithValue(c.Request.Context(), "user", user)
     c.Request = c.Request.WithContext(ctx)

@@ -12,7 +12,7 @@ func Logout(c *gin.Context) {
         return
     }
 
-    c.SetCookie("session", "", 0, "/", "localhost", true, false)
+    c.SetCookie("session", "", -1, "/", "localhost", true, false)
 
     db := database.GetDB()
 

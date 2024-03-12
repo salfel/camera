@@ -16,7 +16,7 @@ func Video(c *gin.Context, hub *broadcast.Hub) {
 
     stream, ok := hub.Streams[channel]
     if !ok || stream.Ip == "" {
-        templ.Handler(templates.Error("Sorry, couldn't find that camera")).ServeHTTP(c.Writer, c.Request)
+        c.Status(404)
         return
     }
 

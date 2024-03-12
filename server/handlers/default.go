@@ -13,7 +13,7 @@ import (
 func HandleRoutes(hub *broadcast.Hub) http.Handler {
     r := gin.Default()
 
-    r.Use(middleware.User)
+    r.Use(middleware.User, middleware.NotFound)
 
     r.GET("/", Home)
     

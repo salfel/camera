@@ -1,0 +1,17 @@
+package templates
+
+templ Error(message string) {
+    <!DOCTYPE html>
+    <html lang="en">
+        <head>
+            <meta charset="utf-8"/>
+            <title>Security Camera</title>
+            <link href="/styles.css" rel="stylesheet" />
+        </head>
+        <body>
+            <div class="h-screen flex items-center justify-center bg-neutral-950">
+                <span class="text-white text-lg font-semibold">{ message }</span>
+            </div>
+        </body>
+    </html>
+}

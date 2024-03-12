@@ -17,13 +17,9 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 
     r.GET("/", Home)
     
-    r.GET("video/:channel", middleware.Auth, func(c *gin.Context) {
-        Video(c, hub)
-    })
+    r.GET("video/:channel", middleware.Auth, Video(hub))
 
-    r.GET("/stream/:channel", func(c *gin.Context) {
-        Stream(c, hub)
-    })
+    r.GET("/stream/:channel", Stream(hub))
 
     a := r.Group("/auth")
     {

@@ -8,8 +8,10 @@ const channel = window.location.href.split("/").pop()
 const ws = new WebSocket(`ws://${window.location.host}/stepper/${channel}`)
 
 ws.onopen = () => {
-    ws.send(JSON.stringify({"type": "stepper:move", "stepper": "1", "amount": 100}))
-    console.log("sent")
+    buttonUp.addEventListener("click", () => sendMove("y", false))
+    buttonDown.addEventListener("click", () => sendMove("y", true))
+    buttonLeft.addEventListener("click", () => sendMove("x", false))
+    buttonRight.addEventListener("click", () => sendMove("x", true))
 }
 
 function sendMove(stepper, direction) {

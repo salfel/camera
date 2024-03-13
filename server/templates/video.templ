@@ -8,12 +8,36 @@ import (
 
 templ Video(serverIp string) {
     @layouts.Base(true) {
-        <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
-            <source src={streamUrl(serverIp)} type="application/x-mpegURL"></source>
-        </video>
+        <div class="flex items-center">
+            <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
+                <source src={streamUrl(serverIp)} type="application/x-mpegURL"></source>
+            </video>
+            @buttons() {}
+        </div>
     }
 }
 
 func streamUrl(serverIp string) string {
     return fmt.Sprintf("http://%s:80/movie.m3u8", serverIp)
+}
+
+var buttonClass = " flex items-center justify-center w-12 h-12 bg-black text-white font-medium rounded-md"
+
+templ buttons() {
+    <div class="flex-1 flex justify-center">
+        <div class="relative">
+            <button id="up" class={"absolute left-16 top-0" + buttonClass}>
+                @ArrowUp() {}
+            </button>
+            <button id="left" class={"absolute top-16 left-0" + buttonClass}>
+                @ArrowLeft() {}
+            </button>
+            <button id="down" class={"absolute top-32 left-16" + buttonClass}>
+                @ArrowDown() {}
+            </button>
+            <button id="right" class={"absolute top-16 left-32" + buttonClass}>
+                @ArrowRight() {}
+            </button>
+        </div>
+    </div>
 }

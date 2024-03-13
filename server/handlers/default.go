@@ -32,7 +32,7 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
         a.POST("/logout", auth.Logout)
     }
 
-    r.StaticFile("/js/htmx.min.js", "./public/htmx.min.js")
+    r.Static("/js", "./public/js")
     r.StaticFile("/styles.css", "./public/styles.css")
 
     return r

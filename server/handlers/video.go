@@ -2,7 +2,6 @@ package handlers
 
 import (
     "net/http"
-    "fmt"
 
 	"camera-server/services/broadcast"
     "camera-server/templates"
@@ -13,15 +12,15 @@ import (
 
 func Video(hub *broadcast.Hub) gin.HandlerFunc {
     return func(c *gin.Context) {
-        channel := c.Param("channel")
+        // channel := c.Param("channel")
 
-        stream, ok := hub.Streams[channel]
-        if !ok || stream.Ip == "" {
-            c.Status(404)
-            return
-        }
+        // stream, ok := hub.Streams[channel]
+        // if !ok || stream.Ip == "" {
+        //     c.Status(404)
+        //     return
+        // }
 
-        templ.Handler(templates.Video(stream.Ip)).ServeHTTP(c.Writer, c.Request)
+        templ.Handler(templates.Video("192.168.299.193")).ServeHTTP(c.Writer, c.Request)
     }
 }
 
@@ -36,8 +35,6 @@ func Stream(hub *broadcast.Hub) gin.HandlerFunc {
             return
         }
 
-        fmt.Println("new stream", channel)
-
-        go broadcast.HandleVideo(client, ctx)
+        go client.HandleVideo(ctx)
     }
 }

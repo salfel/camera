@@ -13,24 +13,19 @@ type Stream struct {
     Clients []*Client
 }
 
-type messageType struct {
-    Type string `json:"type"`
-}
-
 type registerMessage struct {
-    Type    string `json:"type"`
     Ip      string `json:"ip"` 
 }
 
-func HandleVideo(client *Client, ctx context.Context) {
+func (client *Client) HandleVideo(ctx context.Context) {
     for {
         select {
         case message := <-client.Message:
             if client.Type != "camera" {
-                break
+                continue;
             }
 
-            var msg messageType
+            var msg MessageType
             err := json.Unmarshal(message.Data, &msg)
             if err != nil {
                 fmt.Println(err)

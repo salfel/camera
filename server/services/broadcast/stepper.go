@@ -51,7 +51,6 @@ func moveStepper(c *Client, message Message) {
             continue
         }
 
-        fmt.Println("sent")
         client.Send <- message
     }
 }

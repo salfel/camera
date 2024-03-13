@@ -1,10 +1,21 @@
 package broadcast
 
 import (
-    "context"
+	"context"
 	"fmt"
+	"time"
+
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+)
+
+const (
+    writeWait = 10 * time.Second
+
+    poingWait = 60 * time.Second
+    pingPeriod = (poingWait * 9) / 10
+
+    maxMessageSize = 512
 )
 
 type Client struct {
@@ -45,13 +56,18 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
 }
 
 func (c *Client) writePump(ctx context.Context) {
+    ticker := time.NewTicker(pingPeriod)
+
 	defer func() {
+        ticker.Stop()
 		c.Stream.Hub.Unregister <- c
+        c.Conn.Close()
 	}()
 
 	for {
 		select {
 		case message, ok := <-c.Send:
+            c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
 			if !ok {
 				err := c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				if err != nil {
@@ -60,10 +76,23 @@ func (c *Client) writePump(ctx context.Context) {
 				return
 			}
 
-			err := c.Conn.WriteMessage(websocket.TextMessage, message.Data)
-			if err != nil {
-				return
-			}
+            w, err := c.Conn.NextWriter(websocket.TextMessage)
+            if err != nil {
+                fmt.Println(err)
+                return
+            }
+
+            w.Write(message.Data)
+
+            if err := w.Close(); err != nil {
+                return
+            }
+
+        case <-ticker.C:
+            c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+            if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+                return
+            }
         case <-ctx.Done():
             return
 		}
@@ -77,10 +106,16 @@ func (c *Client) readPump(cancel context.CancelFunc) {
         cancel()
 	}()
 
+    c.Conn.SetReadLimit(maxMessageSize)
+    c.Conn.SetReadDeadline(time.Now().Add(poingWait))
+    c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(poingWait)); return nil })
+
 	for {
 		_, msg, err := c.Conn.ReadMessage()
 		if err != nil {
-            fmt.Println(err)
+            if websocket.IsUnexpectedCloseError(err, websocket.CloseGoingAway, websocket.CloseAbnormalClosure) {
+                fmt.Println(err)
+            }
             break
 		}
 

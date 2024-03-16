@@ -27,7 +27,6 @@ func (client *Client) HandlerStepper(ctx context.Context) {
             }
             
         case <-ctx.Done():
-            delete(client.Stream.Hub.Streams, client.Channel)
             return
         }
     }

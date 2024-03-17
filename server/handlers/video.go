@@ -1,40 +1,40 @@
 package handlers
 
 import (
-    "net/http"
+	"net/http"
 
 	"camera-server/services/broadcast"
-    "camera-server/templates"
+	"camera-server/templates"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
 )
 
 func Video(hub *broadcast.Hub) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        // channel := c.Param("channel")
+	return func(c *gin.Context) {
+		// channel := c.Param("channel")
 
-        // stream, ok := hub.Streams[channel]
-        // if !ok || stream.Ip == "" {
-        //     c.Status(404)
-        //     return
-        // }
+		// stream, ok := hub.Streams[channel]
+		// if !ok || stream.Ip == "" {
+		//     c.Status(404)
+		//     return
+		// }
 
-        templ.Handler(templates.Video("192.168.299.193")).ServeHTTP(c.Writer, c.Request)
-    }
+		templ.Handler(templates.Video("192.168.299.193")).ServeHTTP(c.Writer, c.Request)
+	}
 }
 
 func Stream(hub *broadcast.Hub) gin.HandlerFunc {
-    return func(c *gin.Context) {
-        channel := c.Param("channel")
+	return func(c *gin.Context) {
+		channel := c.Param("channel")
 
-        client, ctx, err := broadcast.ServeWs(hub, c, channel, "camera")
+		client, ctx, err := broadcast.ServeWs(hub, c, channel, "camera")
 
-        if err != nil {
-            c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
-            return
-        }
+		if err != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+			return
+		}
 
-        go client.HandleVideo(ctx)
-    }
+		go client.HandleVideo(ctx)
+	}
 }

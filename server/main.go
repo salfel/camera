@@ -5,10 +5,10 @@ import (
 )
 
 func main() {
-    server := NewServer()
+	server := NewServer()
 
-    err := server.ListenAndServe()
-    if err != nil {
-        panic(fmt.Sprintf("cannot start server: %s", err))
-    }
+	err := server.ListenAndServe()
+	if err != nil {
+		panic(fmt.Sprintf("cannot start server: %s", err))
+	}
 }

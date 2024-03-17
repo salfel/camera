@@ -7,16 +7,16 @@ import (
 )
 
 func Logout(c *gin.Context) {
-    sessionId, err := c.Cookie("session")
-    if err != nil {
-        return
-    }
+	sessionId, err := c.Cookie("session")
+	if err != nil {
+		return
+	}
 
-    c.SetCookie("session", "", -1, "/", "localhost", true, false)
+	c.SetCookie("session", "", -1, "/", "localhost", true, false)
 
-    db := database.GetDB()
+	db := database.GetDB()
 
-    db.Delete(&database.Session{}, sessionId)
+	db.Delete(&database.Session{}, sessionId)
 
-    c.Header("HX-Redirect", "/")
+	c.Header("HX-Redirect", "/")
 }

@@ -9,9 +9,9 @@ import (
 )
 
 func NotFound(c *gin.Context) {
-    c.Next()
+	c.Next()
 
-    if c.Writer.Status() == http.StatusNotFound {
-        templ.Handler(templates.Error("404 Not Found")).ServeHTTP(c.Writer, c.Request)
-    }
+	if c.Writer.Status() == http.StatusNotFound {
+		templ.Handler(templates.Error("404 Not Found")).ServeHTTP(c.Writer, c.Request)
+	}
 }

@@ -12,35 +12,35 @@ import (
 )
 
 func Register(c *gin.Context) {
-    templ.Handler(templates.Register()).ServeHTTP(c.Writer, c.Request)
+	templ.Handler(templates.Register()).ServeHTTP(c.Writer, c.Request)
 }
 
 func Create(c *gin.Context) {
-    username := c.PostForm("username")
-    password := c.PostForm("password")
+	username := c.PostForm("username")
+	password := c.PostForm("password")
 
-    db := database.GetDB()
+	db := database.GetDB()
 
-    if err := db.Where("username = ?", username).First(&database.User{}).Error; err == nil {
-        values := map[string]string{"username": username, "password": password}
+	if err := db.Where("username = ?", username).First(&database.User{}).Error; err == nil {
+		values := map[string]string{"username": username, "password": password}
 
-        templ.Handler(templates.RegisterForm(values, map[string]string{"username": "Username is already taken"})).ServeHTTP(c.Writer, c.Request)
-        return
-    }
+		templ.Handler(templates.RegisterForm(values, map[string]string{"username": "Username is already taken"})).ServeHTTP(c.Writer, c.Request)
+		return
+	}
 
-    user := database.User{Username: username, Password: password}
-    err := db.Create(&user).Error
+	user := database.User{Username: username, Password: password}
+	err := db.Create(&user).Error
 
-    if err != nil {
-        c.JSON(500, gin.H{"error": err.Error()})
-        return
-    }
+	if err != nil {
+		c.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
 
-    session := &database.Session{UserID: user.ID}
-    db.Create(&session)
+	session := &database.Session{UserID: user.ID}
+	db.Create(&session)
 
-    c.SetCookie("session", fmt.Sprint(session.ID), int(time.Hour * 24 * 30), "/", "localhost", false, true)
+	c.SetCookie("session", fmt.Sprint(session.ID), int(time.Hour*24*30), "/", "localhost", false, true)
 
-    c.Header("HX-Redirect", "/")
-    c.JSON(200, "success")
+	c.Header("HX-Redirect", "/")
+	c.JSON(200, "success")
 }

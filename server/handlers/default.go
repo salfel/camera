@@ -3,39 +3,39 @@ package handlers
 import (
 	"net/http"
 
+	"camera-server/handlers/auth"
 	"camera-server/middleware"
 	"camera-server/services/broadcast"
-    "camera-server/handlers/auth"
 
 	"github.com/gin-gonic/gin"
 )
 
 func HandleRoutes(hub *broadcast.Hub) http.Handler {
-    r := gin.Default()
+	r := gin.Default()
 
-    r.Use(middleware.User, middleware.NotFound)
+	r.Use(middleware.User, middleware.NotFound)
 
-    r.GET("/", Home)
-    
-    r.GET("video/:channel", middleware.Auth, Video(hub))
+	r.GET("/", Home)
 
-    r.GET("/stream/:channel", Stream(hub))
+	r.GET("video/:channel", middleware.Auth, Video(hub))
 
-    r.GET("/stepper/:channel", Stepper(hub))
+	r.GET("/stream/:channel", Stream(hub))
 
-    a := r.Group("/auth")
-    {
-        a.GET("/login", auth.Login)
-        a.POST("/authenticate", auth.Authenticate)
+	r.GET("/stepper/:channel", Stepper(hub))
 
-        a.GET("/register", auth.Register)
-        a.POST("/create", auth.Create)
+	a := r.Group("/auth")
+	{
+		a.GET("/login", auth.Login)
+		a.POST("/authenticate", auth.Authenticate)
 
-        a.POST("/logout", auth.Logout)
-    }
+		a.GET("/register", auth.Register)
+		a.POST("/create", auth.Create)
 
-    r.Static("/js", "./public/js")
-    r.StaticFile("/styles.css", "./public/styles.css")
+		a.POST("/logout", auth.Logout)
+	}
 
-    return r
+	r.Static("/js", "./public/js")
+	r.StaticFile("/styles.css", "./public/styles.css")
+
+	return r
 }

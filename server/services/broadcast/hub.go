@@ -37,24 +37,24 @@ func (h *Hub) Run() {
 		case client := <-h.Register:
 			stream, ok := h.Streams[client.Channel]
 			if !ok {
-                stream = &Stream{Hub: h, Ip: "", Clients: make([]*Client, 0)}
-                h.Streams[client.Channel] = stream
+				stream = &Stream{Hub: h, Ip: "", Clients: make([]*Client, 0)}
+				h.Streams[client.Channel] = stream
 			}
 
 			stream.Clients = append(stream.Clients, client)
 
 		case client := <-h.Unregister:
-            stream, ok := h.Streams[client.Channel]
-            if !ok {
-                break
-            }
+			stream, ok := h.Streams[client.Channel]
+			if !ok {
+				break
+			}
 
-            for i, c := range h.Streams[client.Channel].Clients {
-                if client == c {
-                    stream.Clients = append(stream.Clients[:i], stream.Clients[i+1:]...)
-                    break
-                }
-            }
+			for i, c := range h.Streams[client.Channel].Clients {
+				if client == c {
+					stream.Clients = append(stream.Clients[:i], stream.Clients[i+1:]...)
+					break
+				}
+			}
 		}
 	}
 }

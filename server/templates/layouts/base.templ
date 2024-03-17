@@ -28,9 +28,9 @@ templ Base(video bool) {
 
 templ Header() {
     <header class="flex items-center py-5 px-8">
-        <div class="flex-1">
+        <a class="flex-1" href="/">
             <h2 class="text-3xl font-semibold">CCTV Camera</h2>
-        </div>
+        </a>
         if GetUser(ctx) == nil {
             <div class="space-x-5">
                 <a href="/auth/login" class="text-lg font-medium">Login</a>

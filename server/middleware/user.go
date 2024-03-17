@@ -17,13 +17,9 @@ func getUser(c *gin.Context) *database.User {
 		return nil
 	}
 
-	db.Where("id = ?", cookie).Preload("User").First(&session)
+	err = db.Where("id = ?", cookie).Preload("User").First(&session).Error
 
 	if session == nil {
-		return nil
-	}
-
-	if session.User == (database.User{}) {
 		return nil
 	}
 

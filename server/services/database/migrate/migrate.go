@@ -8,5 +8,5 @@ func main() {
 
 	db := database.GetDB()
 
-	db.AutoMigrate(database.Session{}, database.User{})
+	db.AutoMigrate(database.Session{}, database.User{}, database.Visit{})
 }

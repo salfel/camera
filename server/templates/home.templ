@@ -2,10 +2,26 @@ package templates
 
 import (
     "camera-server/templates/layouts"
+	"camera-server/services/database"
+
+    "github.com/xeonx/timeago"
 )
 
-templ Home() {
+templ Home(visits []database.Visit) {
     @layouts.Base(false) {
-        <div>home</div>
+        if visits != nil {
+            <div>
+                <h2>Last videos</h2>
+                <ul>
+                    for _, visit := range visits {
+                        <li class="flex justify-between items-center">
+                            <a href={ templ.SafeURL("/video/" + visit.Channel) }>{ visit.Channel }</a>
+
+                            <span>{ timeago.English.Format(visit.CreatedAt) }</span>
+                        </li>
+                    }
+                </ul>
+            </div>
+        }
     }
 }

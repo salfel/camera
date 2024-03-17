@@ -29,6 +29,7 @@ tmp/
 
 database.sqlite
 public/styles.css
+*_templ.txt
 
 node_modules
 

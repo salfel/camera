@@ -9,7 +9,6 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"unique"`
 	Password string
-	Visits   []Visit
 }
 
 type Session struct {

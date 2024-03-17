@@ -18,15 +18,16 @@ func Home(c *gin.Context) {
 		db.Where("id = ?", cookie).First(&session)
 	}
 
-	var visits []database.Visit
-	err = db.Where("user_id = ?", session.UserID).Order("created_at desc").Find(&visits).Error
+	var user database.User
+	err = db.Model(&database.User{}).Preload("Visits").Take(&user).Error
 
 	if err != nil {
 		if err != gorm.ErrRecordNotFound {
 			templ.Handler(templates.Error(err.Error())).ServeHTTP(c.Writer, c.Request)
 			return
 		}
+		user.Visits = nil
 	}
 
-	templ.Handler(templates.Home(visits)).ServeHTTP(c.Writer, c.Request)
+	templ.Handler(templates.Home(user.Visits)).ServeHTTP(c.Writer, c.Request)
 }

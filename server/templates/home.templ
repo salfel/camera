@@ -9,7 +9,7 @@ import (
 
 templ Home(visits []database.Visit) {
     @layouts.Base(false) {
-        if visits != nil {
+        if len(visits) > 0 {
             <div>
                 <h2>Last videos</h2>
                 <ul>

@@ -8,17 +8,18 @@ const channel = window.location.href.split("/").pop()
 const ws = new WebSocket(`ws://${window.location.host}/stepper/${channel}`)
 
 ws.onopen = () => {
-    const speed = 3
+    const speed = 15
+    const interval = 100
 
-    let interval = null
-    buttonUp.addEventListener("mousedown", () => interval = setInterval(() => sendMove("y", speed), 50))
-    buttonUp.addEventListener("mouseup", () => clearInterval(interval))
-    buttonDown.addEventListener("mousedown", () => interval = setInterval(() => sendMove("y", -speed), 50))
-    buttonDown.addEventListener("mouseup", () => clearInterval(interval))
-    buttonLeft.addEventListener("mousedown", () => interval = setInterval(() => sendMove("x", -speed), 50))
-    buttonLeft.addEventListener("mouseup", () => clearInterval(interval))
-    buttonRight.addEventListener("mousedown", () => interval = setInterval(() => sendMove("x", speed), 50))
-    buttonRight.addEventListener("mouseup", () => clearInterval(interval))
+    let intervalId = null
+    buttonUp.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("y", speed), interval))
+    buttonUp.addEventListener("mouseup", () => clearInterval(intervalId))
+    buttonDown.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("y", -speed), interval))
+    buttonDown.addEventListener("mouseup", () => clearInterval(intervalId))
+    buttonLeft.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", -speed), interval))
+    buttonLeft.addEventListener("mouseup", () => clearInterval(intervalId))
+    buttonRight.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", speed), interval))
+    buttonRight.addEventListener("mouseup", () => clearInterval(intervalId))
 }
 
 function sendMove(stepper, amount) {

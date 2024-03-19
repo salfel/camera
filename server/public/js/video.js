@@ -13,13 +13,11 @@ ws.onopen = () => {
 
     let intervalId = null
     buttonUp.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("y", speed), interval))
-    buttonUp.addEventListener("mouseup", () => clearInterval(intervalId))
     buttonDown.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("y", -speed), interval))
-    buttonDown.addEventListener("mouseup", () => clearInterval(intervalId))
     buttonLeft.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", -speed), interval))
-    buttonLeft.addEventListener("mouseup", () => clearInterval(intervalId))
     buttonRight.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", speed), interval))
-    buttonRight.addEventListener("mouseup", () => clearInterval(intervalId))
+
+    body.addEventListener("mouseup", () => clearInterval(intervalId))
 }
 
 function sendMove(stepper, amount) {

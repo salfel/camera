@@ -1,12 +1,16 @@
 #! usr/bin/python
 
 from websockets import connect
+from dotenv import load_dotenv
 import json
 import asyncio
 import requests
 import json
 import threading
+import os
 from stepper import run_motor
+
+load_dotenv()
 
 thread = None
 queue = []
@@ -16,7 +20,8 @@ def getIp():
     return response.text
 
 async def main():
-    url = "ws://192.168.70.132:3000/stream/test2"
+    server_ip = os.getenv("SERVER_IP")
+    url = "ws://" + str(server_ip) + ":3000/stream/test"
     ip = getIp()
     async with connect(url) as websocket:
         await websocket.send(json.dumps({"type": "register:ip", "ip": ip}))

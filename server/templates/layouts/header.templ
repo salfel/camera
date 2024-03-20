@@ -16,7 +16,7 @@ templ Header() {
 }
 
 templ Dropdown(open bool) {
-    <div class="relative" id="dropdown">
+    <div class="relative">
         <button hx-post={ getDropdownUrl(open) } hx-swap="outerHTML" hx-target="closest div">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
@@ -24,22 +24,31 @@ templ Dropdown(open bool) {
 
         </button>
         if open {
-            <div class="absolute right-0 top-full mt-2 w-32 py-2 space-y-2 bg-white border border-gray-300 rounded-sm text-center">
+            <div class="absolute right-0 top-full mt-2 w-44 space-y-0.5 bg-white border border-gray-300 rounded-md">
                 if GetUser(ctx) != nil {
-                    <h4 class="font-semibold">{ GetUser(ctx).Username }</h4>
-                    <hr class="border-b border-b-gray-300 w-full" />
+                    <h4 class="font-semibold px-3 py-1.5">{ GetUser(ctx).Username }</h4>
+                    <hr class="border-b border-b-gray-300" />
                     <nav>
                         <ul>
-                            <li>
-                                <a hx-post="/auth/logout" class="block text-red-500">Logout</a>
+                            <li hx-post="/auth/logout" class="block cursor-pointer m-1 px-3 py-1.5 text-red-500 hover:bg-gray-100 rounded-md">
+                                Logout
                             </li>
                         </ul>
                     </nav>
                 } 
                 else {
-                    <a href="/auth/login" class="block">Login</a>
-                    <hr class="border-b border-b-gray-300 w-full" />
-                    <a href="/auth/register" class="block">Register</a>
+                    <h4 class="font-semibold px-3 py-1.5">Guest</h4>
+                    <hr class="border-b border-b-gray-300" />
+                    <nav>
+                        <ul>
+                            <li class="block cursor-pointer m-1 px-3 py-1.5 hover:bg-gray-100 rounded-md">
+                                <a href="/auth/login">Login</a>
+                            </li>
+                            <li class="block cursor-pointer m-1 px-3 py-1.5 hover:bg-gray-100 rounded-md">
+                                <a href="/auth/register">Register</a>
+                            </li>
+                        </ul>
+                    </nav>
                 }
             </div>
         }

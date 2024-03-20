@@ -67,9 +67,12 @@ func (c *Client) writePump(ctx context.Context) {
 	for {
 		select {
 		case message, ok := <-c.Send:
-			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			err := c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err != nil {
+				return
+			}
 			if !ok {
-				err := c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
+				err = c.Conn.WriteMessage(websocket.CloseMessage, []byte{})
 				if err != nil {
 					fmt.Println(err)
 				}
@@ -82,15 +85,21 @@ func (c *Client) writePump(ctx context.Context) {
 				return
 			}
 
-			w.Write(message.Data)
+			_, err = w.Write(message.Data)
+			if err != nil {
+				return
+			}
 
 			if err := w.Close(); err != nil {
 				return
 			}
 
 		case <-ticker.C:
-			c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
-			if err := c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
+			err := c.Conn.SetWriteDeadline(time.Now().Add(writeWait))
+			if err != nil {
+				return
+			}
+			if err = c.Conn.WriteMessage(websocket.PingMessage, nil); err != nil {
 				return
 			}
 		case <-ctx.Done():
@@ -107,8 +116,12 @@ func (c *Client) readPump(cancel context.CancelFunc) {
 	}()
 
 	c.Conn.SetReadLimit(maxMessageSize)
-	c.Conn.SetReadDeadline(time.Now().Add(poingWait))
-	c.Conn.SetPongHandler(func(string) error { c.Conn.SetReadDeadline(time.Now().Add(poingWait)); return nil })
+	err := c.Conn.SetReadDeadline(time.Now().Add(poingWait))
+	c.Conn.SetPongHandler(func(string) error { return c.Conn.SetReadDeadline(time.Now().Add(poingWait)) })
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 
 	for {
 		_, msg, err := c.Conn.ReadMessage()

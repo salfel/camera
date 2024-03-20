@@ -3,6 +3,7 @@ package handlers
 import (
 	"net/http"
 
+	"camera-server/services"
 	"camera-server/services/broadcast"
 	"camera-server/services/database"
 	"camera-server/templates"
@@ -23,7 +24,7 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 
 		db := database.GetDB()
 		ctx := c.Request.Context()
-		user := ctx.Value("user").(*database.User)
+		user := ctx.Value(services.UserContext).(*database.User)
 
 		db.Delete(&database.Visit{}, "user_id = ? AND channel = ?", user.ID, channel)
 

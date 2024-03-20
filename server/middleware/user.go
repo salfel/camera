@@ -1,15 +1,12 @@
 package middleware
 
 import (
+	"camera-server/services"
 	"camera-server/services/database"
 	"context"
 
 	"github.com/gin-gonic/gin"
 )
-
-type ContextKey string
-
-var userContext ContextKey = "user"
 
 func getUser(c *gin.Context) *database.User {
 	db := database.GetDB()
@@ -33,7 +30,7 @@ func getUser(c *gin.Context) *database.User {
 func User(c *gin.Context) {
 	user := getUser(c)
 
-	ctx := context.WithValue(c.Request.Context(), userContext, user)
+	ctx := context.WithValue(c.Request.Context(), services.UserContext, user)
 	c.Request = c.Request.WithContext(ctx)
 
 	c.Next()

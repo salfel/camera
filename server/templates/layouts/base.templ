@@ -2,6 +2,7 @@ package layouts
 
 import (
     "camera-server/services/database"
+	"camera-server/services"
 )
 
 templ Base(video bool) {
@@ -43,7 +44,7 @@ templ Header() {
 }
 
 func GetUser(ctx context.Context) *database.User {
-    if user, ok := ctx.Value("user").(*database.User); ok {
+    if user, ok := ctx.Value(services.UserContext).(*database.User); ok {
         return user
     }
 

@@ -4,6 +4,7 @@ import (
     "fmt"
     
     "camera-server/templates/layouts"
+    "camera-server/templates/icons"
 )
 
 templ Video(serverIp string) {
@@ -28,16 +29,16 @@ templ buttons() {
     <div class="flex-1 flex justify-center">
         <div class="relative">
             <button id="up" class={"absolute left-16 top-0" + buttonClass}>
-                @ArrowUp() {}
+                @icons.ArrowUp() {}
             </button>
             <button id="left" class={"absolute top-16 left-0" + buttonClass}>
-                @ArrowLeft() {}
+                @icons.ArrowLeft() {}
             </button>
             <button id="down" class={"absolute top-32 left-16" + buttonClass}>
-                @ArrowDown() {}
+                @icons.ArrowDown() {}
             </button>
             <button id="right" class={"absolute top-16 left-32" + buttonClass}>
-                @ArrowRight() {}
+                @icons.ArrowRight() {}
             </button>
         </div>
     </div>

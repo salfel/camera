@@ -1,0 +1,62 @@
+package layouts
+
+import (
+    "camera-server/services/database"
+    "camera-server/services"
+)
+
+templ Header() {
+    <header class="flex items-center py-5 px-8 mb-6 border-b border-b-neutral-100 shadow-md">
+        <a class="flex-1" href="/">
+            <h2 class="text-3xl font-semibold">CCTV Camera</h2>
+        </a>
+
+        @Dropdown(false)
+    </header>
+}
+
+templ Dropdown(open bool) {
+    <div class="relative" id="dropdown">
+        <button hx-post={ getDropdownUrl(open) } hx-swap="outerHTML" hx-target="closest div">
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+            </svg>
+
+        </button>
+        if open {
+            <div class="absolute right-0 top-full mt-2 w-32 py-2 space-y-2 bg-white border border-gray-300 rounded-sm text-center">
+                if GetUser(ctx) != nil {
+                    <h4 class="font-semibold">{ GetUser(ctx).Username }</h4>
+                    <hr class="border-b border-b-gray-300 w-full" />
+                    <nav>
+                        <ul>
+                            <li>
+                                <a hx-post="/auth/logout" class="block text-red-500">Logout</a>
+                            </li>
+                        </ul>
+                    </nav>
+                } 
+                else {
+                    <a href="/auth/login" class="block">Login</a>
+                    <hr class="border-b border-b-gray-300 w-full" />
+                    <a href="/auth/register" class="block">Register</a>
+                }
+            </div>
+        }
+    </div>
+}
+
+func getDropdownUrl(open bool) string {
+    if open {
+        return "/htmx/user-dropdown"
+    }
+    return "/htmx/user-dropdown?open=true"
+}
+
+func GetUser(ctx context.Context) *database.User {
+    if user, ok := ctx.Value(services.UserContext).(*database.User); ok {
+        return user
+    }
+
+    return nil
+}

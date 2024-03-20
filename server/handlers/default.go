@@ -34,6 +34,11 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 		a.POST("/logout", auth.Logout)
 	}
 
+	htmx := r.Group("/htmx")
+	{
+		htmx.POST("user-dropdown", UserDropdown)
+	}
+
 	r.Static("/js", "./public/js")
 	r.StaticFile("/styles.css", "./public/styles.css")
 

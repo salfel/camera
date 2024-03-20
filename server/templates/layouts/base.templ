@@ -1,10 +1,5 @@
 package layouts
 
-import (
-    "camera-server/services/database"
-	"camera-server/services"
-)
-
 templ Base(video bool) {
 	<!DOCTYPE html>
 	<html lang="en">
@@ -20,33 +15,12 @@ templ Base(video bool) {
                 <script defer src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
             }
 		</head>
-		<body class="px-8">
+		<body>
             @Header() 
-			{ children... }
+            <div class="px-8">
+                { children... }
+            </div>
 		</body>
 	</html>
 }
 
-templ Header() {
-    <header class="flex items-center py-5 px-8">
-        <a class="flex-1" href="/">
-            <h2 class="text-3xl font-semibold">CCTV Camera</h2>
-        </a>
-        if GetUser(ctx) == nil {
-            <div class="space-x-5">
-                <a href="/auth/login" class="text-lg font-medium">Login</a>
-                <a href="auth/register" class="text-lg font-medium">Register</a>
-            </div>
-        } else {
-            <button hx-post="auth/logout">{GetUser(ctx).Username}</button>
-        }
-    </header>
-}
-
-func GetUser(ctx context.Context) *database.User {
-    if user, ok := ctx.Value(services.UserContext).(*database.User); ok {
-        return user
-    }
-
-    return nil
-}

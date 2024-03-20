@@ -10,6 +10,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -24,8 +25,16 @@ func Authenticate(c *gin.Context) {
 	db := database.GetDB()
 
 	var user database.User
-	result := db.Where(database.User{Username: username, Password: password}).First(&user)
+	result := db.Where(database.User{Username: username}).First(&user)
+
 	if errors.Is(result.Error, gorm.ErrRecordNotFound) {
+		values := map[string]string{"username": username, "password": password}
+
+		templ.Handler(templates.LoginForm(values, map[string]string{"password": "Wrong username or password"})).ServeHTTP(c.Writer, c.Request)
+		return
+	}
+
+	if err := bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password)); err != nil {
 		values := map[string]string{"username": username, "password": password}
 
 		templ.Handler(templates.LoginForm(values, map[string]string{"password": "Wrong username or password"})).ServeHTTP(c.Writer, c.Request)

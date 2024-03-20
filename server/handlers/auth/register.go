@@ -9,6 +9,7 @@ import (
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func Register(c *gin.Context) {
@@ -28,8 +29,14 @@ func Create(c *gin.Context) {
 		return
 	}
 
-	user := database.User{Username: username, Password: password}
-	err := db.Create(&user).Error
+	hash, err := bcrypt.GenerateFromPassword([]byte(password), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	user := database.User{Username: username, Password: string(hash)}
+	err = db.Create(&user).Error
 
 	if err != nil {
 		c.JSON(500, gin.H{"error": err.Error()})

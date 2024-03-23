@@ -17,7 +17,7 @@ ws.onopen = () => {
     buttonLeft.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", -speed), interval))
     buttonRight.addEventListener("mousedown", () => intervalId = setInterval(() => sendMove("x", speed), interval))
 
-    body.addEventListener("mouseup", () => clearInterval(intervalId))
+    document.body.addEventListener("mouseup", () => clearInterval(intervalId))
 }
 
 function sendMove(stepper, amount) {

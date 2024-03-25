@@ -26,22 +26,25 @@ async def main():
     server_ip = os.getenv("SERVER_IP")
     url = "ws://" + str(server_ip) + ":3000/stream/test"
     ip = getIp()
-    async with connect(url) as websocket:
-        await websocket.send(json.dumps({"type": "register:ip", "ip": ip}))
-        message = await websocket.recv()
-        print(message)
-        while True:
+    async for websocket in connect(url):
+        try: 
+            await websocket.send(json.dumps({"type": "register:ip", "ip": ip}))
             message = await websocket.recv()
-            message = json.loads(message)
+            print(message)
+            while True:
+                message = await websocket.recv()
+                message = json.loads(message)
 
-            if message["type"] == "stepper:move": 
-                global thread
-                if thread != None and thread.is_alive(): 
-                    queue.append(message["amount"])
-                else:
-                    thread = threading.Thread(target=motor_thread, args=(message["amount"],))
-                    thread.daemon = True
-                    thread.start()
+                if message["type"] == "stepper:move": 
+                    global thread
+                    if thread != None and thread.is_alive(): 
+                        queue.append(message["amount"])
+                    else:
+                        thread = threading.Thread(target=motor_thread, args=(message["amount"],))
+                        thread.daemon = True
+                        thread.start()
+        except:
+            pass
 
 def motor_thread(amount): 
     run_motor(amount)

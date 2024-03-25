@@ -4,10 +4,10 @@ from websockets import connect
 from dotenv import load_dotenv
 import json
 import asyncio
-import requests
 import json
 import threading
 import os
+import socket
 from stepper import run_motor
 
 load_dotenv()
@@ -16,8 +16,11 @@ thread = None
 queue = []
 
 def getIp():
-    response = requests.get("https://api.ipify.org")
-    return response.text
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip = s.getsockname()[0]
+    s.close()
+    return ip
 
 async def main():
     server_ip = os.getenv("SERVER_IP")

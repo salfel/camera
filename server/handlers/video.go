@@ -3,7 +3,6 @@ package handlers
 import (
 	"fmt"
 	"net/http"
-	"time"
 
 	"camera-server/services"
 	"camera-server/services/broadcast"
@@ -49,15 +48,6 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 
 			err = db.Model(&user).Association("Streams").Append(&stream)
 
-			if err != nil {
-				fmt.Println(err)
-				c.Status(500)
-				return
-			}
-		} else {
-			stream := streams[0]
-			streams = []database.Stream{}
-			err := db.Model(&database.UserStream{}).Where("user_id = ? AND stream_id = ?", user.ID, stream.ID).Update("updated_at", time.Now()).Error
 			if err != nil {
 				fmt.Println(err)
 				c.Status(500)

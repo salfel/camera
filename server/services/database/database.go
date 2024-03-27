@@ -9,6 +9,7 @@ type User struct {
 	gorm.Model
 	Username string `gorm:"unique"`
 	Password string
+	Streams  []Stream `gorm:"many2many:user_streams;"`
 }
 
 type Session struct {
@@ -17,10 +18,10 @@ type Session struct {
 	User   User
 }
 
-type Visit struct {
+type Stream struct {
 	gorm.Model
-	UserID  uint
-	Channel string
+	Channel   string `gorm:"unique"`
+	AuthToken string
 }
 
 var DB *gorm.DB

@@ -7,17 +7,17 @@ import (
     "github.com/xeonx/timeago"
 )
 
-templ Home(visits []database.Visit) {
+templ Home(streams []database.Stream) {
     @layouts.Base(false) {
-        if len(visits) > 0 {
+        if len(streams) > 0 {
             <div>
                 <h2>Last videos</h2>
                 <ul>
-                    for _, visit := range visits {
+                    for _, stream := range streams {
                         <li class="flex justify-between items-center">
-                            <a href={ templ.SafeURL("/video/" + visit.Channel) }>{ visit.Channel }</a>
+                            <a href={ templ.SafeURL("/video/" + stream.Channel) }>{ stream.Channel }</a>
 
-                            <span>{ timeago.English.Format(visit.CreatedAt) }</span>
+                            <span>{ timeago.English.Format(stream.UpdatedAt) }</span>
                         </li>
                     }
                 </ul>

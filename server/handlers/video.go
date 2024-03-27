@@ -1,6 +1,7 @@
 package handlers
 
 import (
+	"fmt"
 	"net/http"
 
 	"camera-server/services"
@@ -16,8 +17,8 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		channel := c.Param("channel")
 
-		stream, ok := hub.Streams[channel]
-		if !ok || stream.Ip == "" {
+		strmn, ok := hub.Streams[channel]
+		if !ok || strmn.Ip == "" {
 			c.Status(404)
 			return
 		}
@@ -26,10 +27,29 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 		ctx := c.Request.Context()
 		user := ctx.Value(services.UserContext).(*database.User)
 
-		db.Delete(&database.Visit{}, "user_id = ? AND channel = ?", user.ID, channel)
+		var streams []database.Stream
+		err := db.Model(&user).Where("channel = ?", channel).Association("Streams").Find(&streams)
 
-		visit := database.Visit{UserID: user.ID, Channel: channel}
-		db.Create(&visit)
+		if err != nil {
+			fmt.Println(err)
+			c.Status(500)
+			return
+		}
+
+		if len(streams) == 0 {
+			var stream database.Stream
+			db.Where("channel = ?", channel).First(&stream)
+
+			err = db.Model(&user).Association("Streams").Append(&stream)
+
+			if err != nil {
+				fmt.Println(err)
+				c.Status(500)
+				return
+			}
+		} else {
+			db.Model(streams[0]).Update("channel", channel)
+		}
 
 		templ.Handler(templates.Video()).ServeHTTP(c.Writer, c.Request)
 	}

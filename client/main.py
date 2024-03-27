@@ -28,7 +28,7 @@ async def main():
     ip = getIp()
     async for websocket in connect(url):
         try: 
-            await websocket.send(json.dumps({"type": "register:ip", "ip": ip}))
+            await websocket.send(json.dumps({"type": "register:ip", "ip": ip, "authToken": os.getenv("AUTH_TOKEN")}))
             message = await websocket.recv()
             print(message)
             while True:

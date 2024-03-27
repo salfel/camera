@@ -8,6 +8,7 @@ import (
 	"camera-server/services/broadcast"
 
 	"github.com/gin-gonic/gin"
+	rtsptowebrtc "github.com/salfel/RTSPtoWebRTC"
 )
 
 func HandleRoutes(hub *broadcast.Hub) http.Handler {
@@ -38,6 +39,8 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 	{
 		htmx.POST("user-dropdown", UserDropdown)
 	}
+
+	rtsptowebrtc.ServeGin(r)
 
 	r.Static("/js", "./public/js")
 	r.StaticFile("/styles.css", "./public/styles.css")

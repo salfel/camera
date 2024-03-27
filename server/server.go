@@ -11,6 +11,7 @@ import (
 	"camera-server/services/broadcast"
 
 	_ "github.com/joho/godotenv/autoload"
+	rtsptowebrtc "github.com/salfel/RTSPtoWebRTC"
 )
 
 type Server struct {
@@ -25,6 +26,12 @@ func NewServer() *http.Server {
 
 	hub := broadcast.NewHub()
 	go hub.Run()
+
+	rtsptowebrtc.SetConfig(&rtsptowebrtc.ConfigST{
+		Server: rtsptowebrtc.ServerST{
+			ICEServers: []string{"stun:stun.l.google.com:19302"},
+		},
+	})
 
 	// Declare Server config
 	server := &http.Server{

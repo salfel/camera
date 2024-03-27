@@ -1,26 +1,20 @@
 package templates
 
 import (
-    "fmt"
-    
     "camera-server/templates/layouts"
     "camera-server/templates/icons"
 )
 
-templ Video(serverIp string) {
+templ Video() {
     @layouts.Base(true) {
+        <script src="/js/webrtc-adapter.js"></script>
+        <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
         <div class="flex items-center">
-            <video width="1280px" height="720px" class="video-js" controls autoplay muted preload="auto" data-setup="{}"> 
-                <source src={streamUrl(serverIp)} type="application/x-mpegURL"></source>
-            </video>
-            @buttons() {}
+            <video width="1280px" height="720px" controls autoplay muted />
+            @buttons()
         </div>
-        <script defer src="/js/video.js"></script>
+        <script defer src="/js/webrtc.js"></script>
     }
-}
-
-func streamUrl(serverIp string) string {
-    return fmt.Sprintf("http://%s:80/movie.m3u8", serverIp)
 }
 
 var buttonClass = " flex items-center justify-center w-12 h-12 bg-black text-white font-medium rounded-md"

@@ -16,11 +16,11 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		channel := c.Param("channel")
 
-		// stream, ok := hub.Streams[channel]
-		// if !ok || stream.Ip == "" {
-		//     c.Status(404)
-		//     return
-		// }
+		stream, ok := hub.Streams[channel]
+		if !ok || stream.Ip == "" {
+			c.Status(404)
+			return
+		}
 
 		db := database.GetDB()
 		ctx := c.Request.Context()
@@ -31,7 +31,7 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 		visit := database.Visit{UserID: user.ID, Channel: channel}
 		db.Create(&visit)
 
-		templ.Handler(templates.Video("192.168.299.193")).ServeHTTP(c.Writer, c.Request)
+		templ.Handler(templates.Video()).ServeHTTP(c.Writer, c.Request)
 	}
 }
 

@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net"
+
+	rtsptowebrtc "github.com/salfel/RTSPtoWebRTC"
 )
 
 type Stream struct {
@@ -52,8 +54,16 @@ func (client *Client) HandleVideo(ctx context.Context) {
 
 				client.Stream.Ip = msg.Ip
 				client.Send <- Message{Data: []byte(client.Stream.Ip), Channel: client.Channel}
+
+				rtsptowebrtc.ServeStream(client.Channel, rtsptowebrtc.StreamST{
+					OnDemand:     false,
+					DisableAudio: true,
+					URL:          "rtsp://" + client.Stream.Ip + ":8554/cam",
+				})
 			}
 		case <-ctx.Done():
+			rtsptowebrtc.RemoveStream(client.Channel)
+
 			delete(client.Stream.Hub.Streams, client.Channel)
 			return
 		}

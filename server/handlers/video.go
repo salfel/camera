@@ -3,6 +3,7 @@ package handlers
 import (
 	"fmt"
 	"net/http"
+	"time"
 
 	"camera-server/services"
 	"camera-server/services/broadcast"
@@ -38,7 +39,13 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 
 		if len(streams) == 0 {
 			var stream database.Stream
-			db.Where("channel = ?", channel).First(&stream)
+			err := db.Where("channel = ?", channel).First(&stream).Error
+
+			if err != nil {
+				fmt.Println(err)
+				c.Status(500)
+				return
+			}
 
 			err = db.Model(&user).Association("Streams").Append(&stream)
 
@@ -48,7 +55,14 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 				return
 			}
 		} else {
-			db.Model(streams[0]).Update("channel", channel)
+			stream := streams[0]
+			streams = []database.Stream{}
+			err := db.Model(&database.UserStream{}).Where("user_id = ? AND stream_id = ?", user.ID, stream.ID).Update("updated_at", time.Now()).Error
+			if err != nil {
+				fmt.Println(err)
+				c.Status(500)
+				return
+			}
 		}
 
 		templ.Handler(templates.Video()).ServeHTTP(c.Writer, c.Request)

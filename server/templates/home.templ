@@ -3,8 +3,6 @@ package templates
 import (
     "camera-server/templates/layouts"
 	"camera-server/services/database"
-
-    "github.com/xeonx/timeago"
 )
 
 templ Home(streams []database.Stream) {
@@ -16,8 +14,6 @@ templ Home(streams []database.Stream) {
                     for _, stream := range streams {
                         <li class="flex justify-between items-center">
                             <a href={ templ.SafeURL("/video/" + stream.Channel) }>{ stream.Channel }</a>
-
-                            <span>{ timeago.English.Format(stream.UpdatedAt) }</span>
                         </li>
                     }
                 </ul>

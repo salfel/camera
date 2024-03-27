@@ -23,7 +23,7 @@ func Home(c *gin.Context) {
 	user := ctx.Value(services.UserContext).(*database.User)
 	var streams []database.Stream
 
-	err = db.Model(&user).Association("Streams").Find(&streams)
+	err = db.Model(&user).Order("streams.updated_at desc").Association("Streams").Find(&streams)
 	if err != nil {
 		fmt.Println(err)
 		c.Status(500)

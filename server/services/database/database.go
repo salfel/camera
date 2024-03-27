@@ -1,6 +1,8 @@
 package database
 
 import (
+	"time"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
@@ -22,6 +24,12 @@ type Stream struct {
 	gorm.Model
 	Channel   string `gorm:"unique"`
 	AuthToken string
+}
+
+type UserStream struct {
+	UserID    int `gorm:"primaryKey"`
+	StreamID  int `gorm:"primaryKey"`
+	UpdatedAt time.Time
 }
 
 var DB *gorm.DB

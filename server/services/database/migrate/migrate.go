@@ -9,7 +9,12 @@ func main() {
 
 	db := database.GetDB()
 
-	err := db.AutoMigrate(database.Session{}, database.User{}, database.Stream{})
+	err := db.SetupJoinTable(&database.User{}, "Streams", &database.UserStream{})
+	if err != nil {
+		fmt.Println(err)
+	}
+
+	err = db.AutoMigrate(database.Session{}, database.User{}, database.Stream{})
 	if err != nil {
 		fmt.Println(err)
 	}

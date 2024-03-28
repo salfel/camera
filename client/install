@@ -1,7 +1,11 @@
 #! /bin/bash
 
 sudo ln -sf $PWD/cameraClient.service /etc/systemd/system
-sudo ln -sf $PWD/main.py /usr/bin/local/cameraClient
+sudo ln -sf $PWD/cameraClient.sh ./usr/local/bin/cameraClient
+
+python -m venv venv
+
+venv/bin/pip install -r requirements.txt
 
 sudo systemctl daemon-reload
 sudo systemctl enable cameraClient

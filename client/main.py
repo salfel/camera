@@ -1,5 +1,3 @@
-#! usr/bin/python
-
 from websockets import connect, exceptions
 from dotenv import load_dotenv
 import json

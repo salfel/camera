@@ -6,7 +6,7 @@ After=network.target
 Type=simple
 User=salfel
 ExecStart=/usr/local/bin/cameraClient
-Restart=on-inactive
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

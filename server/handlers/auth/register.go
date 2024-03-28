@@ -22,7 +22,8 @@ func Create(c *gin.Context) {
 
 	values := map[string]string{"username": username, "password": password}
 	if len(password) < 5 {
-		templ.Handler(templates.RegisterForm(values, map[string]string{"password": "Your password must have at least 5 characters"}))
+		templ.Handler(templates.RegisterForm(values, map[string]string{"password": "Your password must have at least 5 characters"})).ServeHTTP(c.Writer, c.Request)
+		return
 	}
 
 	db := database.GetDB()

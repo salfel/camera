@@ -24,7 +24,7 @@ templ Dropdown(open bool) {
 
         </button>
         if open {
-            <div class="absolute right-0 top-full mt-2 w-44 space-y-0.5 bg-white border border-gray-300 rounded-md">
+            <div class="absolute right-0 top-full mt-2 w-44 space-y-0.5 bg-white border border-gray-300 rounded-md z-10">
                 if GetUser(ctx) != nil {
                     <h4 class="m-1 font-semibold px-3 py-1.5">{ GetUser(ctx).Username }</h4>
                     <hr class="border-b border-b-gray-300" />

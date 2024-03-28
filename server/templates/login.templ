@@ -9,15 +9,15 @@ templ Login() {
                 <h1 class="text-xl font-semibold">Login</h1>
                 <p class="text-sm">Login to use the full features of Security Camera</p>
             </div>
+            <a href="/auth/register" class="absolute top-5 right-5 font-medium text-lg">
+                Register
+            </a>
             @LoginForm(map[string]string{}, map[string]string{}) {}
         </div>
     }
 }
 
 templ LoginForm(values, errors map[string]string) {
-    <a href="/auth/register" class="absolute top-5 right-5 font-medium text-lg">
-        Register
-    </a>
     <form class="w-80" hx-post="/auth/authenticate" hx-swap="outerHTML">
         <div class="space-y-4">
             <div>
@@ -28,7 +28,7 @@ templ LoginForm(values, errors map[string]string) {
                     placeholder="Username"
                     value={ values["username"] }
                 />
-                <span class="font-sm text-red-500 mt-1">{ errors["username"] }</span>
+                <span class="font-xs text-red-500 mt-1">{ errors["username"] }</span>
             </div>
             <div>
                 <label class="text-sm text-gray-800 mb-2">Password</label>
@@ -39,7 +39,7 @@ templ LoginForm(values, errors map[string]string) {
                     placeholder="Password"
                     value={ values["password"] }
                 />
-                <span class="font-sm text-red-500 mt-1">{ errors["password"] }</span>
+                <span class="font-xs text-red-500 mt-1">{ errors["password"] }</span>
             </div>
 
             <button type="submit" class="w-full py-2 bg-black text-white font-medium rounded-md">Login</button>

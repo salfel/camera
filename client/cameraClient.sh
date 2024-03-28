@@ -1,3 +1,6 @@
 #! /bin/bash
 
-$PWD/venv/bin/python3 $PWD/main.py
+dir=$(dirname $(readlink -f "$0"))
+
+source "$dir/venv/bin/activate"
+python "$dir/main.py"

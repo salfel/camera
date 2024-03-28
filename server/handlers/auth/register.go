@@ -20,10 +20,13 @@ func Create(c *gin.Context) {
 	username := c.PostForm("username")
 	password := c.PostForm("password")
 
-	db := database.GetDB()
+	values := map[string]string{"username": username, "password": password}
+	if len(password) < 5 {
+		templ.Handler(templates.RegisterForm(values, map[string]string{"password": "Your password must have at least 5 characters"}))
+	}
 
+	db := database.GetDB()
 	if err := db.Where("username = ?", username).First(&database.User{}).Error; err == nil {
-		values := map[string]string{"username": username, "password": password}
 
 		templ.Handler(templates.RegisterForm(values, map[string]string{"username": "Username is already taken"})).ServeHTTP(c.Writer, c.Request)
 		return

@@ -1,6 +1,6 @@
 #! usr/bin/python
 
-from websockets import connect
+from websockets import connect, exceptions
 from dotenv import load_dotenv
 import json
 import asyncio
@@ -43,8 +43,8 @@ async def main():
                         thread = threading.Thread(target=motor_thread, args=(message["amount"],))
                         thread.daemon = True
                         thread.start()
-        except:
-            pass
+        except exceptions.ConnectionClosed as e:
+            print(e)
 
 def motor_thread(amount): 
     run_motor(amount)

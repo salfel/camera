@@ -1,7 +1,7 @@
 #! /bin/bash
 
 sudo ln -sf $PWD/cameraClient.service /etc/systemd/system
-sudo ln -sf $PWD/cameraClient.sh ./usr/local/bin/cameraClient
+sudo ln -sf $PWD/cameraClient.sh /usr/local/bin/cameraClient
 
 python -m venv venv
 

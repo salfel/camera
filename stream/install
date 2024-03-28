@@ -9,7 +9,7 @@ mv mediamtx_armv6/mediamtx .
 
 rm -rf mediamtx_*
 
-sudo l -sf $PWD/mediamtx /usr/local/bin/cameraStream
+sudo l -sf $PWD/cameraStream /usr/local/bin/cameraStream
 sudo ln -sf $PWD/cameraStream.service /etc/systemd/system
 
 sudo systemctl daemon-reload

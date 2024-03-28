@@ -1,11 +1,17 @@
 #! /bin/bash
 
-sudo ln -sf $PWD/streamCamHls /usr/local/bin
-sudo ln -sf $PWD/nginx.conf /etc/nginx/nginx.conf
+wget https://github.com/bluenviron/mediamtx/releases/download/v1.6.0/mediamtx_v1.6.0_linux_armv6.tar.gz
 
-sudo ln -sf $PWD/camhls.service /etc/systemd/system
+mkdir $PWD/mediamtx_armv6
+tar -xf mediamtx_v1.6.0_linux_armv6.tar.gz -C $PWD/mediamtx_armv6
+
+mv mediamtx_armv6/mediamtx .
+
+rm -rf mediamtx_*
+
+sudo l -sf $PWD/mediamtx /usr/local/bin/cameraStream
+sudo ln -sf $PWD/cameraStream.service /etc/systemd/system
 
 sudo systemctl daemon-reload
-sudo systemctl enable camhls
-sudo systemctl start camhls
-
+sudo systemctl enable cameraStream
+sudo systemctl start cameraStream

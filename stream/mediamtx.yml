@@ -1,0 +1,7 @@
+paths:
+  cam: 
+    source: rpiCamera
+    rpiCameraHFlip: true
+    rpiCameraVFlip: true
+    rpiCameraBitrate: 1000000
+    rpiCameraFPS: 20

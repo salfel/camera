@@ -1,11 +1,11 @@
 [Unit]
-Description=Camera HLS streamer
+Description=Camera RTSP streamer
 After=network.target
 
 [Service]
 Type=simple
 User=salfel
-ExecStart=/usr/local/bin/streamCamHls
+ExecStart=/usr/local/bin/cameraStream
 Restart=on-inactive
 
 [Install]

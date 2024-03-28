@@ -37,22 +37,8 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 		}
 
 		if len(streams) == 0 {
-			var stream database.Stream
-			err := db.Where("channel = ?", channel).First(&stream).Error
-
-			if err != nil {
-				fmt.Println(err)
-				c.Status(500)
-				return
-			}
-
-			err = db.Model(&user).Association("Streams").Append(&stream)
-
-			if err != nil {
-				fmt.Println(err)
-				c.Status(500)
-				return
-			}
+			c.Redirect(http.StatusSeeOther, "/video/"+channel+"/auth")
+			return
 		}
 
 		templ.Handler(templates.Video()).ServeHTTP(c.Writer, c.Request)

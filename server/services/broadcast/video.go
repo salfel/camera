@@ -8,6 +8,7 @@ import (
 	"net"
 
 	rtsptowebrtc "github.com/salfel/RTSPtoWebRTC"
+	"golang.org/x/crypto/bcrypt"
 	"gorm.io/gorm"
 )
 
@@ -82,12 +83,18 @@ func (client *Client) registerIp(message Message) {
 
 	var stream database.Stream
 	err = db.Where("channel = ?", client.Channel).First(&stream).Error
-	if err == gorm.ErrRecordNotFound {
-		db.Create(&database.Stream{
-			Channel:   client.Channel,
-			AuthToken: client.Stream.AuthToken,
-		})
-	} else {
-		db.Model(&stream).Update("auth_token", client.Stream.AuthToken)
+	if err != gorm.ErrRecordNotFound {
+		return
 	}
+
+	hash, err := bcrypt.GenerateFromPassword([]byte(client.Stream.AuthToken), bcrypt.DefaultCost)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+
+	db.Create(&database.Stream{
+		Channel:   client.Channel,
+		AuthToken: string(hash),
+	})
 }

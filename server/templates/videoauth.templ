@@ -1,0 +1,33 @@
+package templates
+
+import "camera-server/templates/layouts"
+
+templ VideoAuth(channel string) {
+    @layouts.Auth() {
+        <div class="bg-white px-8 py-6 rounded-lg">
+            <div class="w-80 space-y-2 mb-5">
+                <h1 class="text-xl font-semibold">Connect</h1>
+                <p class="text-sm text-gray-800">Enter the Auth Token to connect to { channel }</p>
+            </div>
+            @VideoForm(channel, "")
+        </div>
+    }
+}
+
+templ VideoForm(channel, err string) {
+    <form class="w-80" hx-post={"/auth/video/" + channel} hx-swap="outerHTML">
+        <div class="space-y-4">
+            <div class="w-full">
+                <label class="text-sm text-gray-800 mb-2">Auth Token</label>
+                <input 
+                    name="authToken" 
+                    class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
+                    placeholder="Auth Token"
+                />
+                 <span class="font-sm text-red-500 mt-1">{ err }</span>
+            </div>
+
+            <button type="submit" class="w-full py-2 bg-black text-white font-medium rounded-md">Connect</button>
+        </div>
+    </form>
+}

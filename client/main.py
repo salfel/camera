@@ -22,7 +22,7 @@ def getIp():
 
 async def main():
     server_ip = os.getenv("SERVER_IP")
-    url = "ws://" + str(server_ip) + ":3000/stream/test"
+    url = "ws://" + str(server_ip) + ":3000/stream/" + os.getenv("CHANNEL")
     ip = getIp()
     async for websocket in connect(url):
         try: 

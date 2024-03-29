@@ -6,7 +6,7 @@ import (
 )
 
 templ Home(streams []database.Stream) {
-    @layouts.Base(false) {
+    @layouts.Base() {
         if len(streams) > 0 {
             <div>
                 <h2>Last videos</h2>

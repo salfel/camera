@@ -1,6 +1,6 @@
 package layouts
 
-templ Base(video bool) {
+templ Base() {
 	<!DOCTYPE html>
 	<html lang="en">
 		<head>
@@ -9,11 +9,6 @@ templ Base(video bool) {
 			<script src="/js/htmx.min.js"></script>
 			<link href="/styles.css" rel="stylesheet" />
             <script src="https://unpkg.com/htmx.org/dist/ext/ws.js"></script>
-
-            if video {
-                <link href="https://vjs.zencdn.net/8.10.0/video-js.css" rel="stylesheet" />
-                <script defer src="https://vjs.zencdn.net/8.10.0/video.min.js"></script>
-            }
 		</head>
 		<body>
             @Header() 

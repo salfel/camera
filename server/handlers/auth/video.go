@@ -20,7 +20,7 @@ func Video(c *gin.Context) {
 }
 
 func Stream(c *gin.Context) {
-	channel := c.Query("channel")
+	channel := c.PostForm("channel")
 	authToken := c.PostForm("authToken")
 
 	ctx := c.Request.Context()
@@ -30,6 +30,7 @@ func Stream(c *gin.Context) {
 
 	var stream database.Stream
 	err := db.Where("channel = ?", channel).First(&stream).Error
+
 	if err == gorm.ErrRecordNotFound {
 		templ.Handler(templates.VideoForm(channel, map[string]string{"channel": "Stream " + channel + " does not exist"})).ServeHTTP(c.Writer, c.Request)
 		return

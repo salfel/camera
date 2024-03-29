@@ -15,12 +15,12 @@ templ VideoAuth(channel string) {
 }
 
 templ VideoForm(channel string, errors map[string]string) {
-    <form class="w-80" hx-post={"/auth/video/" + channel} hx-swap="outerHTML">
+    <form class="w-80" hx-post={"/video/auth"} hx-swap="outerHTML">
         <div class="space-y-4">
             <div class="w-full">
                 <label class="text-sm text-gray-800 mb-2">Channel</label>
                 <input 
-                    name="authToken" 
+                    name="channel" 
                     class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
                     placeholder="Channel"
                     if channel != "" {

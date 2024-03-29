@@ -9,14 +9,27 @@ templ VideoAuth(channel string) {
                 <h1 class="text-xl font-semibold">Connect</h1>
                 <p class="text-sm text-gray-800">Enter the Auth Token to connect to { channel }</p>
             </div>
-            @VideoForm(channel, "")
+            @VideoForm(channel, map[string]string{})
         </div>
     }
 }
 
-templ VideoForm(channel, err string) {
+templ VideoForm(channel string, errors map[string]string) {
     <form class="w-80" hx-post={"/auth/video/" + channel} hx-swap="outerHTML">
         <div class="space-y-4">
+            <div class="w-full">
+                <label class="text-sm text-gray-800 mb-2">Channel</label>
+                <input 
+                    name="authToken" 
+                    class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
+                    placeholder="Channel"
+                    if channel != "" {
+                        value={channel}
+                        disabled
+                    }
+                />
+                 <span class="font-sm text-red-500 mt-1">{ errors["channel"] }</span>
+            </div>
             <div class="w-full">
                 <label class="text-sm text-gray-800 mb-2">Auth Token</label>
                 <input 
@@ -24,7 +37,7 @@ templ VideoForm(channel, err string) {
                     class="w-full px-4 py-2 border border-gray-300 outline-none focus:outline-none rounded-md"
                     placeholder="Auth Token"
                 />
-                 <span class="font-sm text-red-500 mt-1">{ err }</span>
+                 <span class="font-sm text-red-500 mt-1">{ errors["authToken"] }</span>
             </div>
 
             <button type="submit" class="w-full py-2 bg-black text-white font-medium rounded-md">Connect</button>

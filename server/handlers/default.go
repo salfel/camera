@@ -18,8 +18,10 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 
 	r.GET("/", Home)
 
-	r.GET("video/:channel", middleware.Auth, Video(hub))
-	r.GET("video/:channel/auth", middleware.Auth, auth.Video)
+	r.GET("/video/:channel", middleware.Auth, Video(hub))
+
+	r.GET("/video/auth", middleware.Auth, auth.Video)
+	r.POST("/video/auth", middleware.Auth, auth.Stream)
 
 	r.GET("/stream/:channel", Stream(hub))
 
@@ -35,8 +37,6 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 
 		a.POST("/logout", auth.Logout)
 
-		a.GET("/video/:channel", auth.Video)
-		a.POST("/video/:channel", auth.Stream)
 	}
 
 	htmx := r.Group("/htmx")

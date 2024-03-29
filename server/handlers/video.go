@@ -37,7 +37,7 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 		}
 
 		if len(streams) == 0 {
-			c.Redirect(http.StatusSeeOther, "/video/"+channel+"/auth")
+			c.Redirect(http.StatusSeeOther, "/video/auth?channel="+channel)
 			return
 		}
 

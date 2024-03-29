@@ -1,0 +1,23 @@
+package templates
+
+import (
+    "camera-server/templates/layouts"
+)
+
+templ AddCamera() {
+    @layouts.Auth() {
+        <div class="bg-white px-8 py-6 rounded-lg">
+            <div class="space-y-2 mb-5">
+                <h1 class="text-xl font-semibold">Login</h1>
+                <p class="text-sm">Login to use the full features of Security Camera</p>
+            </div>
+            @AddCameraForm("") {}
+        </div>
+    }
+}
+
+templ AddCameraForm(err string) {
+    <form hx-post="/">
+
+    </form>
+}

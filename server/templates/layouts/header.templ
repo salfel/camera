@@ -6,17 +6,20 @@ import (
 )
 
 templ Header() {
-    <header class="flex items-center justify-between py-5 px-8 mb-6 border-b border-b-neutral-100 shadow-md">
-        <a href="/">
+    <header class="flex items-center gap-8 py-5 px-8 mb-6 border-b border-b-neutral-100 shadow-md">
+        <a href="/" class="mr-auto">
             <h2 class="text-3xl font-semibold">CCTV Camera</h2>
         </a>
 
+        <a href="/video/auth" class="font-semibold text-lg">
+            Add Camera
+        </a>
         @Dropdown(false)
     </header>
 }
 
 templ Dropdown(open bool) {
-    <div class="relative">
+    <div class="relative flex items-center">
         <button hx-post={ getDropdownUrl(open) } hx-swap="outerHTML" hx-target="closest div">
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="size-8">
               <path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0 0 12 15.75a7.488 7.488 0 0 0-5.982 2.975m11.963 0a9 9 0 1 0-11.963 0m11.963 0A8.966 8.966 0 0 1 12 21a8.966 8.966 0 0 1-5.982-2.275M15 9.75a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />

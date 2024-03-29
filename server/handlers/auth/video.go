@@ -5,6 +5,7 @@ import (
 	"camera-server/services/database"
 	"camera-server/templates"
 	"fmt"
+	"net/http"
 
 	"github.com/a-h/templ"
 	"github.com/gin-gonic/gin"
@@ -22,6 +23,9 @@ func Stream(c *gin.Context) {
 	channel := c.Query("channel")
 	authToken := c.PostForm("authToken")
 
+	ctx := c.Request.Context()
+	user := ctx.Value(services.UserContext).(*database.User)
+
 	db := database.GetDB()
 
 	var stream database.Stream
@@ -31,13 +35,24 @@ func Stream(c *gin.Context) {
 		return
 	}
 
+	var streams []database.Stream
+	err = db.Model(&user).Where("channel = ?", channel).Association("Streams").Find(&streams)
+
+	if err != nil {
+		fmt.Println(err)
+		c.Status(500)
+		return
+	}
+
+	if len(streams) > 0 {
+		c.Redirect(http.StatusSeeOther, "/video/"+channel)
+		return
+	}
+
 	if err := bcrypt.CompareHashAndPassword([]byte(stream.AuthToken), []byte(authToken)); err != nil {
 		templ.Handler(templates.VideoForm(channel, map[string]string{"authToken": "Incorrect auth token"})).ServeHTTP(c.Writer, c.Request)
 		return
 	}
-
-	ctx := c.Request.Context()
-	user := ctx.Value(services.UserContext).(*database.User)
 
 	err = db.Model(&user).Association("Streams").Append(&stream)
 

@@ -17,11 +17,11 @@ func Video(hub *broadcast.Hub) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		channel := c.Param("channel")
 
-		strmn, ok := hub.Streams[channel]
-		if !ok || strmn.Ip == "" {
-			c.Status(404)
-			return
-		}
+		// strmn, ok := hub.Streams[channel]
+		// if !ok || strmn.Ip == "" {
+		// 	c.Status(404)
+		// 	return
+		// }
 
 		db := database.GetDB()
 		ctx := c.Request.Context()

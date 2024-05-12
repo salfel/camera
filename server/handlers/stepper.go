@@ -19,6 +19,6 @@ func Stepper(hub *broadcast.Hub) gin.HandlerFunc {
 			return
 		}
 
-		go client.HandlerStepper(ctx)
+		go client.HandleStepper(ctx)
 	}
 }

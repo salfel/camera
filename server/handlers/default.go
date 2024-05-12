@@ -25,7 +25,7 @@ func HandleRoutes(hub *broadcast.Hub) http.Handler {
 
 	r.GET("/stream/:channel", Stream(hub))
 
-	r.GET("/stepper/:channel", Stepper(hub))
+	r.GET("/stepper/:channel", middleware.Auth, Stepper(hub))
 
 	a := r.Group("/auth")
 	{

@@ -6,7 +6,7 @@ import (
 	"fmt"
 )
 
-func (client *Client) HandlerStepper(ctx context.Context) {
+func (client *Client) HandleStepper(ctx context.Context) {
 	for {
 		select {
 		case message := <-client.Message:
@@ -23,7 +23,7 @@ func (client *Client) HandlerStepper(ctx context.Context) {
 			}
 
 			if msg.Type == "stepper:move" {
-				moveStepper(client, message)
+				client.moveStepper(message)
 			}
 
 		case <-ctx.Done():
@@ -33,11 +33,11 @@ func (client *Client) HandlerStepper(ctx context.Context) {
 }
 
 type moveMessage struct {
-	Stepper string `json:"stepper"`
-	Amount  int    `json:"amount"`
+	Axis   string `json:"axis"`
+	Amount int    `json:"amount"`
 }
 
-func moveStepper(c *Client, message Message) {
+func (c *Client) moveStepper(message Message) {
 	var msg moveMessage
 	err := json.Unmarshal(message.Data, &msg)
 	if err != nil {

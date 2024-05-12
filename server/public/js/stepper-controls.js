@@ -1,20 +1,20 @@
-const defaultValue = 5
+const defaultValue = 3
 const controls = {
     up: {
         axis: "y",
-        value: defaultValue,
+        amount: defaultValue,
     }, 
     down: {
         axis: "y",
-        value: -defaultValue,
+        amount: -defaultValue,
     },
     left: {
         axis: "x",
-        value: -defaultValue,
+        amount: -defaultValue,
     },
     right: {
         axis: "x",
-        value: defaultValue,
+        amount: defaultValue,
     },
 }
 
@@ -33,7 +33,7 @@ socket.onopen = () => {
                     ...control,
                 }))
                 console.log("sending " + key)
-            }, 100)
+            }, 35)
         })
 
         function removeInterval() {
@@ -43,4 +43,8 @@ socket.onopen = () => {
         button.addEventListener("mouseup", removeInterval)
         button.addEventListener("mouseleave", removeInterval)
     }
+}
+
+socket.onclose = () => {
+    console.log("")
 }

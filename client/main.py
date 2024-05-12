@@ -22,7 +22,7 @@ def getIp():
 
 async def main():
     server_ip = os.getenv("SERVER_IP")
-    url = "ws://" + str(server_ip) + ":3000/stream/" + os.getenv("CHANNEL")
+    url = "ws://" + str(server_ip) + ":3000/stream/" + (os.getenv("CHANNEL") or "")
     ip = getIp()
     async for websocket in connect(url):
         try: 
@@ -38,18 +38,18 @@ async def main():
                     if thread != None and thread.is_alive(): 
                         queue.append(message["amount"])
                     else:
-                        thread = threading.Thread(target=motor_thread, args=(message["amount"],))
+                        thread = threading.Thread(target=motor_thread, args=(message["axis"], message["amount"],))
                         thread.daemon = True
                         thread.start()
         except exceptions.ConnectionClosed as e:
             print(e)
 
-def motor_thread(amount): 
-    run_motor(amount)
+def motor_thread(axis, amount): 
+    run_motor(axis, amount)
 
     if len(queue): 
         amount = queue.pop(0)
-        thread = threading.Thread(target=motor_thread, args=(amount,))
+        thread = threading.Thread(target=motor_thread, args=(axis, amount,))
         thread.daemon = True
         thread.start()
     

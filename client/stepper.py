@@ -1,8 +1,16 @@
 from RpiMotorLib import RpiMotorLib
 
-motor1 = RpiMotorLib.BYJMotor("motor1")
+motors = {
+    "x": {
+        "motor": RpiMotorLib.BYJMotor("motorX"),
+        "pins": [18, 23, 24, 25]
+    },
+    "y": {
+        "motor": RpiMotorLib.BYJMotor("motorY"),
+        "pins": [17, 22, 10, 9]
+    }
+}
 
-Motor1Pins = [18, 23, 24, 25]
-
-def run_motor(value):
-    motor1.motor_run(Motor1Pins, steps=abs(value), ccwise=value < 0)
+def run_motor(axis: str, amount: int):
+    motor = motors[axis]["motor"]
+    motor.motor_run(motors[axis]["pins"], steps=abs(amount), ccwise=amount < 0)

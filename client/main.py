@@ -3,7 +3,6 @@ from dotenv import load_dotenv
 import json
 import asyncio
 import json
-import threading
 import os
 import socket
 from stepper import run_motor
@@ -34,24 +33,9 @@ async def main():
                 message = json.loads(message)
 
                 if message["type"] == "stepper:move": 
-                    global thread
-                    if thread != None and thread.is_alive(): 
-                        queue.append(message["amount"])
-                    else:
-                        thread = threading.Thread(target=motor_thread, args=(message["axis"], message["amount"],))
-                        thread.daemon = True
-                        thread.start()
+                    run_motor(message["axis"], message["amount"])
         except exceptions.ConnectionClosed as e:
             print(e)
 
-def motor_thread(axis, amount): 
-    run_motor(axis, amount)
-
-    if len(queue): 
-        amount = queue.pop(0)
-        thread = threading.Thread(target=motor_thread, args=(axis, amount,))
-        thread.daemon = True
-        thread.start()
-    
 if __name__ == "__main__":
     asyncio.run(main())

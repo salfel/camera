@@ -96,7 +96,9 @@ func (client *Client) registerIp(message Message) {
 	}
 
 	db.Create(&database.Stream{
-		Channel:   client.Channel,
-		AuthToken: string(hash),
+		Channel:      client.Channel,
+		AuthToken:    string(hash),
+		XOrientation: client.Stream.XOrientation,
+		YOrientation: client.Stream.YOrientation,
 	})
 }

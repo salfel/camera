@@ -6,7 +6,6 @@ import (
 )
 
 func main() {
-
 	db := database.GetDB()
 
 	err := db.AutoMigrate(database.Session{}, database.User{}, database.Stream{})

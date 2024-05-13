@@ -20,8 +20,10 @@ type Session struct {
 
 type Stream struct {
 	gorm.Model
-	Channel   string `gorm:"unique"`
-	AuthToken string
+	Channel      string `gorm:"unique"`
+	XOrientation int    `gorm:"default:0"`
+	YOrientation int    `gorm:"default:0"`
+	AuthToken    string
 }
 
 var DB *gorm.DB

@@ -1,12 +1,14 @@
 package broadcast
 
 import (
+	"camera-server/services/database"
 	"context"
 	"fmt"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gorilla/websocket"
+	"gorm.io/gorm"
 )
 
 const (
@@ -40,7 +42,16 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
 	stream, ok := hub.Streams[channel]
 
 	if !ok {
-		stream = &Stream{Hub: hub, Ip: "", Clients: make([]*Client, 0), XOrientation: 0, YOrientation: 0}
+		db := database.GetDB()
+		var dbStream database.Stream
+
+		err := db.Where("channel = ?", channel).First(&dbStream).Error
+		if err == gorm.ErrRecordNotFound {
+			dbStream = database.Stream{Channel: channel, XOrientation: 0, YOrientation: 0}
+			db.Save(&dbStream)
+		}
+
+		stream = &Stream{Hub: hub, Ip: "", Clients: make([]*Client, 0), XOrientation: dbStream.XOrientation, YOrientation: dbStream.YOrientation}
 		hub.Streams[channel] = stream
 	}
 

@@ -1,6 +1,7 @@
 package broadcast
 
 import (
+	"camera-server/services/database"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -85,5 +86,12 @@ func (c *Client) ListenForOrientation() {
 }
 
 func (c *Client) StoreOrientationInDB() {
+	db := database.GetDB()
+	var stream database.Stream
 
+	db.Where("channel = ?", c.Channel).First(&stream)
+
+	stream.XOrientation = c.Stream.XOrientation
+	stream.YOrientation = c.Stream.YOrientation
+	db.Save(&stream)
 }

@@ -40,7 +40,7 @@ func ServeWs(hub *Hub, c *gin.Context, channel string, clientType string) (*Clie
 	stream, ok := hub.Streams[channel]
 
 	if !ok {
-		stream = &Stream{Hub: hub, Ip: "", Clients: make([]*Client, 0)}
+		stream = &Stream{Hub: hub, Ip: "", Clients: make([]*Client, 0), XOrientation: 0, YOrientation: 0}
 		hub.Streams[channel] = stream
 	}
 

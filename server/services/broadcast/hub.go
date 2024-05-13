@@ -37,7 +37,7 @@ func (h *Hub) Run() {
 		case client := <-h.Register:
 			stream, ok := h.Streams[client.Channel]
 			if !ok {
-				stream = &Stream{Hub: h, Ip: "", Clients: make([]*Client, 0)}
+				stream = &Stream{Hub: h, Ip: "", Clients: make([]*Client, 0), XOrientation: 0, YOrientation: 0}
 				h.Streams[client.Channel] = stream
 			}
 

@@ -20,5 +20,6 @@ func Stepper(hub *broadcast.Hub) gin.HandlerFunc {
 		}
 
 		go client.HandleStepper(ctx)
+		go client.ListenForOrientation()
 	}
 }

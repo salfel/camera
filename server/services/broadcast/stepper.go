@@ -4,7 +4,14 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"math"
+	"time"
 )
+
+const MIN_X = 0
+const MAX_X = 100
+const MIN_Y = 0
+const MAX_Y = 100
 
 func (client *Client) HandleStepper(ctx context.Context) {
 	for {
@@ -13,7 +20,6 @@ func (client *Client) HandleStepper(ctx context.Context) {
 			if client.Type != "client" {
 				continue
 			}
-
 			var msg MessageType
 
 			err := json.Unmarshal(message.Data, &msg)
@@ -45,6 +51,8 @@ func (c *Client) moveStepper(message Message) {
 		return
 	}
 
+	c.updateAmount(msg)
+
 	for _, client := range c.Stream.Clients {
 		if client == c || client.Type != "camera" {
 			continue
@@ -52,4 +60,30 @@ func (c *Client) moveStepper(message Message) {
 
 		client.Send <- message
 	}
+}
+
+func (c *Client) updateAmount(msg moveMessage) {
+	if msg.Axis == "x" {
+		c.Stream.XOrientation = int(math.Min(MAX_X, math.Max(MIN_X, float64(c.Stream.XOrientation+msg.Amount))))
+	} else if msg.Axis == "y" {
+		c.Stream.YOrientation = int(math.Min(MAX_Y, math.Max(MIN_Y, float64(c.Stream.YOrientation+msg.Amount))))
+	}
+}
+
+func (c *Client) ListenForOrientation() {
+	ticker := time.NewTicker(time.Second)
+	lastX := c.Stream.XOrientation
+	lastY := c.Stream.YOrientation
+	for range ticker.C {
+		if lastX != c.Stream.XOrientation || lastY != c.Stream.YOrientation {
+			lastX = c.Stream.XOrientation
+			lastY = c.Stream.YOrientation
+
+			c.StoreOrientationInDB()
+		}
+	}
+}
+
+func (c *Client) StoreOrientationInDB() {
+
 }

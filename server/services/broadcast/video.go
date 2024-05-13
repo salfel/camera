@@ -13,10 +13,12 @@ import (
 )
 
 type Stream struct {
-	Hub       *Hub
-	Ip        string
-	AuthToken string
-	Clients   []*Client
+	Hub          *Hub
+	Ip           string
+	AuthToken    string
+	Clients      []*Client
+	XOrientation int
+	YOrientation int
 }
 
 type registerMessage struct {

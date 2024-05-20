@@ -1,7 +1,10 @@
 paths:
   cam: 
     source: rpiCamera
+    rpiCameraWidth: 1280
+    rpiCameraHeight: 720
     rpiCameraHFlip: true
     rpiCameraVFlip: true
-    rpiCameraBitrate: 1000000
+    rpiCameraBitrate: 3000000
+    rpiCameraSharpness: 1
     rpiCameraFPS: 20
